@@ -1,142 +1,607 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KronAI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
+<title>KronAI | MLBB AI Coach</title>
+
+<style>
     * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
     }
 
     body {
-      background: #080b14;
-      color: white;
-      min-height: 100vh;
+        font-family: Arial, sans-serif;
+        background: #070a12;
+        color: white;
+        min-height: 100vh;
     }
 
-    .header {
-      padding: 25px;
-      background: #101629;
-      border-bottom: 1px solid #242c45;
+    header {
+        padding: 25px 20px;
+        text-align: center;
+        background: linear-gradient(135deg, #10172b, #090b14);
+        border-bottom: 1px solid #242b45;
     }
 
     .logo {
-      font-size: 32px;
-      font-weight: bold;
+        font-size: 34px;
+        font-weight: bold;
+        letter-spacing: 2px;
+    }
+
+    .logo span {
+        color: #7c5cff;
     }
 
     .subtitle {
-      color: #8d99b8;
-      margin-top: 5px;
+        color: #9da5bd;
+        margin-top: 7px;
     }
 
     .container {
-      padding: 20px;
-      max-width: 800px;
-      margin: auto;
+        width: 92%;
+        max-width: 900px;
+        margin: 25px auto;
     }
 
-    .card {
-      background: #11182b;
-      border: 1px solid #27304b;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 15px;
+    .panel {
+        background: #101522;
+        border: 1px solid #252d46;
+        border-radius: 18px;
+        padding: 20px;
+        margin-bottom: 20px;
     }
 
-    .card h2 {
-      margin-bottom: 8px;
+    .panel h2 {
+        margin-bottom: 15px;
     }
 
-    .card p {
-      color: #9da8c4;
+    input,
+    select {
+        width: 100%;
+        padding: 14px;
+        margin-top: 8px;
+        margin-bottom: 15px;
+        background: #080c17;
+        border: 1px solid #303955;
+        border-radius: 10px;
+        color: white;
+        font-size: 16px;
     }
 
     button {
-      width: 100%;
-      padding: 15px;
-      margin-top: 12px;
-      border: none;
-      border-radius: 12px;
-      background: #5b4cff;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 10px;
+        background: #7657ff;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
     }
 
     button:hover {
-      opacity: 0.85;
+        opacity: 0.9;
     }
 
-    #result {
-      margin-top: 20px;
-      padding: 15px;
-      background: #0c1222;
-      border-radius: 12px;
-      display: none;
+    .hero-title {
+        font-size: 30px;
+        font-weight: bold;
+        margin-bottom: 5px;
     }
-  </style>
+
+    .role {
+        color: #aeb6ce;
+        margin-bottom: 18px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .card {
+        background: #0b101c;
+        border: 1px solid #293149;
+        border-radius: 14px;
+        padding: 16px;
+    }
+
+    .card h3 {
+        margin-bottom: 10px;
+        font-size: 17px;
+    }
+
+    .card p {
+        color: #c4c9d8;
+        line-height: 1.5;
+    }
+
+    .item {
+        display: inline-block;
+        background: #191f32;
+        border: 1px solid #343d5a;
+        padding: 7px 10px;
+        border-radius: 8px;
+        margin: 4px 3px 0 0;
+        font-size: 14px;
+    }
+
+    .difficulty {
+        font-weight: bold;
+    }
+
+    .easy {
+        color: #6ee7a0;
+    }
+
+    .medium {
+        color: #ffd166;
+    }
+
+    .hard {
+        color: #ff7777;
+    }
+
+    .status {
+        text-align: center;
+        color: #777f98;
+        margin-top: 20px;
+        font-size: 13px;
+    }
+
+    .empty {
+        text-align: center;
+        color: #8d96ad;
+        padding: 20px;
+    }
+
+    @media (max-width: 650px) {
+        .grid {
+            grid-template-columns: 1fr;
+        }
+
+        .logo {
+            font-size: 29px;
+        }
+
+        .hero-title {
+            font-size: 26px;
+        }
+    }
+</style>
 </head>
 
 <body>
 
-  <div class="header">
-    <div class="logo">⚡ KronAI</div>
-    <div class="subtitle">Your MLBB Strategy Assistant</div>
-  </div>
+<header>
+    <div class="logo">⚡ Kron<span>AI</span></div>
+    <div class="subtitle">MLBB Strategy Assistant</div>
+</header>
 
-  <div class="container">
+<div class="container">
 
-    <div class="card">
-      <h2>🦸 Heroes</h2>
-      <p>Explore heroes and their roles.</p>
-      <button onclick="showMessage('Hero database coming soon!')">
-        Open Heroes
-      </button>
+    <!-- HERO SELECTOR -->
+    <div class="panel">
+
+        <h2>🦸 Select Your Hero</h2>
+
+        <input
+            type="text"
+            id="search"
+            placeholder="Search hero..."
+            oninput="searchHero()"
+        >
+
+        <select id="heroSelect" onchange="showHero()">
+            <option value="">Choose a hero...</option>
+        </select>
+
     </div>
 
-    <div class="card">
-      <h2>⚔️ Builds</h2>
-      <p>Find recommended builds for your hero.</p>
-      <button onclick="showMessage('Build system coming soon!')">
-        Find Build
-      </button>
+
+    <!-- HERO RESULT -->
+    <div id="result">
+
+        <div class="panel empty">
+            Choose a hero above to activate KronAI.
+        </div>
+
     </div>
 
-    <div class="card">
-      <h2>🛡️ Counters</h2>
-      <p>Find heroes that counter your opponent.</p>
-      <button onclick="showMessage('Counter system coming soon!')">
-        Find Counter
-      </button>
+
+    <div class="status">
+        KronAI V0.2 • Prototype Recommendation Engine
     </div>
 
-    <div class="card">
-      <h2>🧠 Draft Assistant</h2>
-      <p>Get recommendations during the draft.</p>
-      <button onclick="showMessage('Draft Assistant coming soon!')">
-        Start Draft
-      </button>
-    </div>
+</div>
 
-    <div id="result"></div>
 
-  </div>
+<script>
 
-  <script>
-    function showMessage(message) {
-      const result = document.getElementById("result");
+const heroes = {
 
-      result.style.display = "block";
-      result.textContent = "KronAI: " + message;
+    "Thamuz": {
+        roles: "EXP Lane / Jungle",
+        spell: "Vengeance",
+        difficulty: "Medium",
+        difficultyClass: "medium",
+
+        build: [
+            "Tough Boots",
+            "Corrosion Scythe",
+            "War Axe",
+            "Queen's Wings",
+            "Oracle",
+            "Immortality"
+        ],
+
+        playstyle:
+            "Play aggressively around sustained fights. Use your mobility and damage to pressure the enemy frontline, but avoid diving too deep before enemy crowd control is used.",
+
+        strong:
+            "Short-range fighters and heroes who struggle against extended fights.",
+
+        weak:
+            "Heavy kiting, strong crowd control and heroes that can safely attack from range."
+    },
+
+
+    "Fanny": {
+        roles: "Jungle",
+        spell: "Retribution",
+        difficulty: "Hard",
+        difficultyClass: "hard",
+
+        build: [
+            "Tough Boots",
+            "Bloodlust Axe",
+            "Hunter Strike",
+            "Malefic Roar",
+            "Blade of Despair",
+            "Immortality"
+        ],
+
+        playstyle:
+            "Farm efficiently, watch your energy and look for isolated targets. Enter fights from unexpected angles and disengage before the enemy can lock you down.",
+
+        strong:
+            "Squishy heroes with limited mobility and weak early-game defense.",
+
+        weak:
+            "Heavy crowd control, anti-dive heroes and compositions that protect their backline."
+    },
+
+
+    "Ling": {
+        roles: "Jungle",
+        spell: "Retribution",
+        difficulty: "Hard",
+        difficultyClass: "hard",
+
+        build: [
+            "Tough Boots",
+            "Berserker's Fury",
+            "Haas's Claws",
+            "Endless Battle",
+            "Malefic Roar",
+            "Immortality"
+        ],
+
+        playstyle:
+            "Use walls to control your approach. Prioritize farming and pick opportunities rather than forcing every team fight.",
+
+        strong:
+            "Backline heroes that lack reliable escape tools.",
+
+        weak:
+            "Reliable crowd control and compositions that can protect their backline."
+    },
+
+
+    "Paquito": {
+        roles: "EXP Lane / Jungle",
+        spell: "Flicker",
+        difficulty: "Hard",
+        difficultyClass: "hard",
+
+        build: [
+            "Tough Boots",
+            "Hunter Strike",
+            "War Axe",
+            "Blade of Despair",
+            "Malefic Roar",
+            "Immortality"
+        ],
+
+        playstyle:
+            "Use short combos and mobility to create burst windows. Do not waste your enhanced skills before an important fight.",
+
+        strong:
+            "Slow or immobile heroes that struggle against repeated dashes.",
+
+        weak:
+            "Strong defensive frontlines and heroes with reliable crowd control."
+    },
+
+
+    "Gusion": {
+        roles: "Jungle / Mid",
+        spell: "Retribution",
+        difficulty: "Hard",
+        difficultyClass: "hard",
+
+        build: [
+            "Arcane Boots",
+            "Genius Wand",
+            "Holy Crystal",
+            "Divine Glaive",
+            "Blood Wings",
+            "Immortality"
+        ],
+
+        playstyle:
+            "Look for isolated targets and use your combo carefully. Your value comes from eliminating priority targets rather than wasting abilities on tanks.",
+
+        strong:
+            "Squishy backline heroes.",
+
+        weak:
+            "High magic defense, tanky compositions and reliable crowd control."
+    },
+
+
+    "Belerick": {
+        roles: "Roam",
+        spell: "Vengeance",
+        difficulty: "Easy",
+        difficultyClass: "easy",
+
+        build: [
+            "Tough Boots",
+            "Dominance Ice",
+            "Athena's Shield",
+            "Radiant Armor",
+            "Guardian Helmet",
+            "Immortality"
+        ],
+
+        playstyle:
+            "Protect your damage dealers and punish enemies that repeatedly attack you. Your job is to create space and disrupt enemy positioning.",
+
+        strong:
+            "Basic-attack-heavy compositions.",
+
+        weak:
+            "High burst magic damage and heroes that can safely poke from range."
+    },
+
+
+    "Atlas": {
+        roles: "Roam",
+        spell: "Flicker",
+        difficulty: "Medium",
+        difficultyClass: "medium",
+
+        build: [
+            "Tough Boots",
+            "Dominance Ice",
+            "Athena's Shield",
+            "Radiant Armor",
+            "Immortality",
+            "Antique Cuirass"
+        ],
+
+        playstyle:
+            "Wait for a strong engage opportunity. Your ultimate can decide an entire team fight, so avoid using it on low-value targets.",
+
+        strong:
+            "Grouped enemy teams and low-mobility backlines.",
+
+        weak:
+            "Purify users, disengage tools and compositions that spread out."
+    },
+
+
+    "Zhuxin": {
+        roles: "Mid Lane",
+        spell: "Flicker",
+        difficulty: "Medium",
+        difficultyClass: "medium",
+
+        build: [
+            "Arcane Boots",
+            "Genius Wand",
+            "Glowing Wand",
+            "Holy Crystal",
+            "Divine Glaive",
+            "Blood Wings"
+        ],
+
+        playstyle:
+            "Control space from range and constantly pressure enemy positioning. Stay behind your frontline and avoid unnecessary close-range fights.",
+
+        strong:
+            "Slow frontliners and grouped enemies.",
+
+        weak:
+            "Fast assassins and heroes capable of reaching the backline."
+    },
+
+
+    "Xavier": {
+        roles: "Mid Lane",
+        spell: "Flicker",
+        difficulty: "Medium",
+        difficultyClass: "medium",
+
+        build: [
+            "Arcane Boots",
+            "Genius Wand",
+            "Holy Crystal",
+            "Divine Glaive",
+            "Blood Wings",
+            "Winter Crown"
+        ],
+
+        playstyle:
+            "Maintain distance and use your range to control objectives and choke points. Avoid being caught without an escape option.",
+
+        strong:
+            "Slow heroes and grouped teams.",
+
+        weak:
+            "Mobile assassins and heavy dive compositions."
+    },
+
+
+    "Beatrix": {
+        roles: "Gold Lane",
+        spell: "Flicker",
+        difficulty: "Hard",
+        difficultyClass: "hard",
+
+        build: [
+            "Swift Boots",
+            "Haas's Claws",
+            "Berserker's Fury",
+            "Malefic Roar",
+            "Wind of Nature",
+            "Immortality"
+        ],
+
+        playstyle:
+            "Farm safely and use your weapon options according to the situation. Positioning is more important than forcing kills.",
+
+        strong:
+            "Slow frontliners and predictable enemy approaches.",
+
+        weak:
+            "Hard dive and assassins that can reach you before you reposition."
+    },
+
+
+    "Balmond": {
+        roles: "EXP Lane / Jungle",
+        spell: "Retribution",
+        difficulty: "Easy",
+        difficultyClass: "easy",
+
+        build: [
+            "Tough Boots",
+            "War Axe",
+            "Hunter Strike",
+            "Brute Force Breastplate",
+            "Queen's Wings",
+            "Immortality"
+        ],
+
+        playstyle:
+            "Use your durability to contest objectives and extended fights. Look for opportunities to secure kills with your ultimate.",
+
+        strong:
+            "Close-range fighters and teams that struggle to stop sustained pressure.",
+
+        weak:
+            "Strong kiting and heavy percentage-health damage."
+    },
+
+
+    "Edith": {
+        roles: "Roam / EXP",
+        spell: "Flicker",
+        difficulty: "Medium",
+        difficultyClass: "medium",
+
+        build: [
+            "Tough Boots",
+            "Dominance Ice",
+            "Athena's Shield",
+            "Radiant Armor",
+            "Holy Crystal",
+            "Divine Glaive"
+        ],
+
+        playstyle:
+            "Build defensive stats early, then use your ultimate to turn stored energy into offensive pressure. Look for coordinated engages.",
+
+        strong:
+            "Teams that rely on extended fights and basic attacks.",
+
+        weak:
+            "Long-range poke and enemies that can disengage before your transformation."
     }
-  </script>
 
-</body>
-</html>
+};
+
+
+// Fill hero dropdown
+
+const select = document.getElementById("heroSelect");
+
+Object.keys(heroes).sort().forEach(hero => {
+
+    const option = document.createElement("option");
+
+    option.value = hero;
+    option.textContent = hero;
+
+    select.appendChild(option);
+
+});
+
+
+// Show selected hero
+
+function showHero() {
+
+    const heroName = select.value;
+
+    if (!heroName) {
+
+        document.getElementById("result").innerHTML = `
+            <div class="panel empty">
+                Choose a hero above to activate KronAI.
+            </div>
+        `;
+
+        return;
+    }
+
+    const hero = heroes[heroName];
+
+    let buildHTML = "";
+
+    hero.build.forEach(item => {
+        buildHTML += `<span class="item">${item}</span>`;
+    });
+
+
+    document.getElementById("result").innerHTML = `
+
+        <div class="panel">
+
+            <div class="hero-title">
+                ${heroName}
+            </div>
+
+            <div class="role">
+                ${hero.roles}
+            </div>
+
+            <div class="grid">
+
+                <div class="card">
+                    <h3>⚔️ Recommended Build</h3>
+                    <p>${buildHTML}</p>
+                </div>
+
+
+                <div class="card">
+                    <h3>
