@@ -1,724 +1,2027 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KronAI | MLBB AI Coach</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08060f">
+<title>⚡ KronAI • MLBB AI Coach</title>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <style>
-* {
-    box-sizing: border-box;
+:root{
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,
+  "Segoe UI",sans-serif;
+  color:#eef0ff;
+  background:#08060f;
+  font-synthesis:none;
+  text-rendering:optimizeLegibility;
+
+  --bg:#08060f;
+  --panel:#100c1b;
+  --panel2:#151025;
+  --line:#29213b;
+  --text:#eef0ff;
+  --muted:#9790b1;
+  --accent:#9a7bff;
+  --accent2:#65b7ff;
 }
 
-body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #050812;
-    color: #f5f7ff;
+*{
+  box-sizing:border-box;
 }
 
-header {
-    text-align: center;
-    padding: 35px 15px 25px;
-    background: linear-gradient(180deg,#11182d,#080c18);
-    border-bottom: 1px solid #202942;
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 70% -10%,#25124d 0%,transparent 35%),
+    radial-gradient(circle at -10% 35%,#101a44 0%,transparent 24%),
+    var(--bg);
+  color:var(--text);
 }
 
-.logo {
-    font-size: 42px;
-    font-weight: 800;
+button,
+input{
+  font:inherit;
 }
 
-.logo span {
-    color: #806cff;
+button{
+  cursor:pointer;
 }
 
-.subtitle {
-    color: #9ba5c4;
-    margin-top: 5px;
-    font-size: 17px;
+.app-shell{
+  min-height:100vh;
 }
 
-.container {
-    max-width: 1100px;
-    margin: auto;
-    padding: 25px 15px 50px;
+/* TOP BAR */
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  padding:14px 20px;
+  background:rgba(8,6,15,.88);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.06);
 }
 
-.card {
-    background: #101625;
-    border: 1px solid #222b42;
-    border-radius: 20px;
-    padding: 22px;
-    margin-bottom: 20px;
+.brand-wrap{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:175px;
 }
 
-h2 {
-    margin-top: 0;
+.brand-mark{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:linear-gradient(135deg,#7c5cff,#39a9ff);
+  box-shadow:0 10px 35px rgba(116,80,255,.25);
 }
 
-.lane-grid {
-    display: grid;
-    grid-template-columns: repeat(5,1fr);
-    gap: 10px;
+.brand-name{
+  font-weight:900;
+  font-size:19px;
+  letter-spacing:.2px;
 }
 
-.lane-btn {
-    padding: 16px 8px;
-    border: 1px solid #303b59;
-    background: #151d30;
-    color: white;
-    border-radius: 14px;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: .2s;
+.brand-sub{
+  font-size:9px;
+  color:#8d85a8;
+  letter-spacing:2px;
+  font-weight:800;
 }
 
-.lane-btn:hover {
-    transform: translateY(-2px);
-    border-color: #806cff;
-    background: #1b2440;
+.top-search{
+  flex:1;
+  max-width:640px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  background:#0f0b18;
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:10px 13px;
+  color:#7e7696;
 }
 
-.lane-btn.active {
-    background: linear-gradient(135deg,#694cff,#9b5cff);
-    border-color: #a996ff;
+.top-search input,
+.input-box input{
+  background:transparent;
+  border:0;
+  outline:0;
+  color:var(--text);
+  width:100%;
 }
 
-.search {
-    width: 100%;
-    padding: 15px;
-    border-radius: 12px;
-    border: 1px solid #303a55;
-    background: #080d19;
-    color: white;
-    font-size: 16px;
-    margin-bottom: 15px;
+.patch-chip{
+  font-size:12px;
+  color:#c0b9d0;
+  background:#120e1f;
+  border:1px solid #2c2441;
+  padding:8px 11px;
+  border-radius:999px;
+  white-space:nowrap;
 }
 
-.hero-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(150px,1fr));
-    gap: 12px;
+/* NAVIGATION */
+
+.main-nav{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  padding:12px 20px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  background:rgba(10,7,17,.78);
 }
 
-.hero {
-    padding: 17px;
-    border-radius: 15px;
-    background: #0b1120;
-    border: 1px solid #26314b;
-    cursor: pointer;
-    transition: .2s;
+.nav-btn{
+  border:1px solid transparent;
+  background:transparent;
+  color:#9e97b4;
+  padding:9px 12px;
+  border-radius:11px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  white-space:nowrap;
 }
 
-.hero:hover {
-    transform: translateY(-3px);
-    border-color: #806cff;
+.nav-btn:hover{
+  background:#120e1f;
+  color:#dcd6f3;
 }
 
-.hero-name {
-    font-weight: bold;
-    font-size: 17px;
+.nav-btn.active{
+  background:#1a1230;
+  color:#fff;
+  border-color:#3a2b5b;
+  box-shadow:inset 0 0 0 1px rgba(156,123,255,.08);
 }
 
-.hero-role {
-    color: #929dbb;
-    font-size: 13px;
-    margin-top: 5px;
+/* PAGE */
+
+.content{
+  max-width:1400px;
+  margin:auto;
+  padding:26px 20px 50px;
 }
 
-.hero-tier {
-    margin-top: 8px;
-    color: #a98cff;
-    font-size: 12px;
+.page-heading{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  margin-bottom:18px;
 }
 
-.result {
-    display: none;
+.heading-icon{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#1b1230,#0d172f);
+  border:1px solid #33264e;
+  display:grid;
+  place-items:center;
+  color:#bda6ff;
 }
 
-.result.show {
-    display: block;
+.page-heading h1{
+  margin:0;
+  font-size:28px;
 }
 
-.build-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-    gap: 15px;
+.page-heading p{
+  margin:3px 0 0;
+  color:var(--muted);
+  font-size:13px;
 }
 
-.info-box {
-    background: #080e1c;
-    border: 1px solid #252f48;
-    border-radius: 15px;
-    padding: 18px;
+/* CONTROLS */
+
+.control-row{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+  margin:18px 0;
 }
 
-.info-box h3 {
-    margin-top: 0;
-    color: #9d8cff;
+.control-group{
+  flex:1;
+  min-width:300px;
 }
 
-.item {
-    padding: 8px 0;
-    border-bottom: 1px solid #1d263a;
+.control-label{
+  display:block;
+  color:#887f9e;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1.4px;
+  font-weight:800;
+  margin-bottom:7px;
 }
 
-.item:last-child {
-    border-bottom: none;
+.segmented{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
 }
 
-.tip {
-    color: #aeb7cf;
-    line-height: 1.6;
+.seg{
+  background:#0e0a17;
+  border:1px solid #28203a;
+  color:#a39bb8;
+  border-radius:10px;
+  padding:9px 12px;
 }
 
-footer {
-    text-align: center;
-    color: #68728e;
-    padding: 25px;
+.seg.active{
+  background:linear-gradient(135deg,#6f4bdf,#2779be);
+  color:#fff;
+  border-color:#8064de;
+  box-shadow:0 5px 20px rgba(107,74,220,.2);
 }
 
-@media(max-width:700px) {
-    .lane-grid {
-        grid-template-columns: repeat(2,1fr);
-    }
+.rank-note{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  background:#0c0a13;
+  border:1px dashed #302842;
+  color:#8e87a2;
+  padding:11px 13px;
+  border-radius:12px;
+  font-size:12px;
+  line-height:1.45;
+  margin-bottom:22px;
+}
 
-    .logo {
-        font-size: 34px;
-    }
+/* HERO GRID */
+
+.hero-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:12px;
+}
+
+.hero-card{
+  display:flex;
+  gap:11px;
+  text-align:left;
+  background:linear-gradient(180deg,#120e1e,#0d0a15);
+  border:1px solid #2b233c;
+  border-radius:15px;
+  padding:9px;
+  color:var(--text);
+  min-height:102px;
+  transition:.2s;
+  box-shadow:0 8px 28px rgba(0,0,0,.1);
+}
+
+.hero-card:hover{
+  transform:translateY(-2px);
+  border-color:#4a3a68;
+  box-shadow:0 15px 40px rgba(0,0,0,.23);
+}
+
+.hero-portrait{
+  position:relative;
+  overflow:hidden;
+  flex:0 0 74px;
+  height:84px;
+  border-radius:12px;
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      hsl(var(--hue) 90% 75% / .26),
+      transparent 32%
+    ),
+    linear-gradient(
+      135deg,
+      hsl(var(--hue) 72% 19%),
+      #0c0a15 75%
+    );
+  border:1px solid rgba(255,255,255,.08);
+  display:grid;
+  place-items:center;
+}
+
+.hero-portrait-big{
+  width:112px;
+  height:132px;
+  flex-basis:112px;
+}
+
+.portrait-glow{
+  position:absolute;
+  inset:auto 0 0 0;
+  height:48%;
+  background:linear-gradient(
+    0deg,
+    hsl(var(--hue) 80% 55% / .22),
+    transparent
+  );
+}
+
+.portrait-initials{
+  font-weight:950;
+  font-size:28px;
+  letter-spacing:-1px;
+  position:relative;
+  text-shadow:0 4px 22px rgba(0,0,0,.5);
+}
+
+.portrait-initials.large{
+  font-size:38px;
+}
+
+.role-dot{
+  position:absolute;
+  right:5px;
+  top:5px;
+  padding:3px 5px;
+  border-radius:999px;
+  background:rgba(0,0,0,.35);
+  font-size:9px;
+  font-weight:900;
+}
+
+.hero-card-body{
+  min-width:0;
+  flex:1;
+  padding-top:1px;
+}
+
+.hero-title-row{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.hero-title-row strong{
+  font-size:14px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.hero-role{
+  color:#8e86a2;
+  font-size:10px;
+  margin-top:3px;
+  min-height:31px;
+}
+
+.stats-row{
+  display:flex;
+  gap:9px;
+  margin-top:5px;
+  color:#777089;
+  font-size:10px;
+}
+
+.stats-row b{
+  color:#ddd7ef;
+  font-weight:800;
+}
+
+.empty-card{
+  padding:20px;
+  border:1px dashed #302943;
+  border-radius:12px;
+  color:#827b94;
+  background:#0d0a14;
+}
+
+/* PROFILE */
+
+.hero-profile{
+  background:linear-gradient(180deg,#110d1c,#0b0811);
+  border:1px solid #2d243e;
+  border-radius:18px;
+  padding:18px;
+}
+
+.back-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:transparent;
+  border:0;
+  color:#9d94b1;
+  padding:7px 3px;
+  margin-bottom:10px;
+}
+
+.profile-head{
+  display:flex;
+  gap:16px;
+  align-items:center;
+}
+
+.profile-main{
+  flex:1;
+}
+
+.profile-name-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.profile-name-row h2{
+  font-size:28px;
+  margin:0;
+}
+
+.profile-role{
+  color:#8f87a3;
+  margin:4px 0 12px;
+}
+
+.profile-stats{
+  display:flex;
+  gap:22px;
+}
+
+.profile-stats div{
+  display:flex;
+  flex-direction:column;
+}
+
+.profile-stats b{
+  font-size:17px;
+}
+
+.profile-stats span{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:#726b82;
+  margin-top:1px;
+}
+
+.profile-tabs{
+  display:flex;
+  gap:18px;
+  margin:20px 0 15px;
+  padding-bottom:8px;
+  border-bottom:1px solid #242036;
+  color:#706980;
+  font-size:12px;
+}
+
+.profile-tabs .selected{
+  color:#e9e3ff;
+  font-weight:900;
+}
+
+.profile-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+.info-panel{
+  background:#0f0b18;
+  border:1px solid #29213a;
+  border-radius:14px;
+  padding:14px;
+}
+
+.info-panel h3{
+  margin:0 0 10px;
+  font-size:14px;
+}
+
+.items{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+
+.item-chip,
+.counter-chip{
+  padding:8px 9px;
+  border-radius:9px;
+  background:#151023;
+  border:1px solid #2d2641;
+  color:#d8d1e8;
+  font-size:11px;
+}
+
+.item-chip span{
+  color:#8b82a0;
+  margin-right:5px;
+}
+
+.build-meta{
+  color:#938ba6;
+  font-size:11px;
+  line-height:1.6;
+  margin-top:12px;
+}
+
+.build-meta b{
+  color:#ddd7eb;
+}
+
+.why{
+  margin-top:10px;
+  padding:10px;
+  border-radius:10px;
+  background:#171022;
+  color:#a39ab8;
+  font-size:11px;
+  line-height:1.5;
+}
+
+.counter-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+
+/* FOOTER */
+
+.footer{
+  display:flex;
+  justify-content:center;
+  gap:24px;
+  flex-wrap:wrap;
+  color:#665f79;
+  font-size:10px;
+  padding:28px 20px;
+  border-top:1px solid rgba(255,255,255,.05);
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+  .topbar{
+    flex-wrap:wrap;
+  }
+
+  .top-search{
+    order:3;
+    max-width:none;
+    flex-basis:100%;
+  }
+
+  .patch-chip{
+    font-size:10px;
+  }
+
+  .profile-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:620px){
+
+  .content{
+    padding:18px 12px 35px;
+  }
+
+  .main-nav{
+    padding:10px 12px;
+  }
+
+  .topbar{
+    padding:11px 12px;
+  }
+
+  .brand-wrap{
+    min-width:auto;
+  }
+
+  .patch-chip{
+    display:none;
+  }
+
+  .hero-grid{
+    grid-template-columns:1fr;
+  }
+
+  .profile-head{
+    align-items:flex-start;
+  }
+
+  .profile-name-row h2{
+    font-size:22px;
+  }
+
+  .footer{
+    gap:10px;
+    flex-direction:column;
+    align-items:center;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<header>
-    <div class="logo">⚡ Kron<span>AI</span></div>
-    <div class="subtitle">MLBB Strategy Assistant</div>
-</header>
+<div id="root"></div>
 
-<div class="container">
+<script type="text/babel">
+</script>
+</body>
+</html>
 
-<div class="card">
-    <h2>🎯 Choose Your Lane</h2>
+const roster = [
 
-    <div class="lane-grid">
-        <button class="lane-btn" onclick="selectLane('EXP',this)">🥊 EXP</button>
-        <button class="lane-btn" onclick="selectLane('Jungle',this)">🌲 Jungle</button>
-        <button class="lane-btn" onclick="selectLane('Mid',this)">🔮 Mid</button>
-        <button class="lane-btn" onclick="selectLane('Gold',this)">🏹 Gold</button>
-        <button class="lane-btn" onclick="selectLane('Roam',this)">🛡️ Roam</button>
-    </div>
-</div>
+  ['Aamon','Assassin','B',50.7],
+  ['Akai','Tank','B',50.2],
+  ['Aldous','Fighter','C',49.3],
+  ['Alice','Tank, Mage','B',50.4],
+  ['Alpha','Fighter','F',46.3],
+  ['Alucard','Fighter, Assassin','C',49.0],
+  ['Angela','Support','B',48.9],
+  ['Argus','Fighter','S',54.7],
+  ['Arlott','Fighter, Assassin','C',48.0],
+  ['Atlas','Tank','A',51.5],
+  ['Aulus','Fighter','B',50.4],
 
-<div class="card" id="heroSection" style="display:none;">
-    <h2 id="laneTitle">Heroes</h2>
+  ['Aurora','Mage','C',48.8],
+  ['Badang','Fighter','B',50.4],
+  ['Balmond','Fighter','C',46.7],
+  ['Bane','Fighter, Mage','B',51.5],
+  ['Barats','Tank, Fighter','A',52.8],
+  ['Baxia','Tank','F',47.1],
+  ['Beatrix','Marksman','B',49.8],
+  ['Belerick','Tank','S',53.1],
+  ['Benedetta','Fighter, Assassin','A',52.3],
+  ['Brody','Marksman','C',48.4],
+  ['Bruno','Marksman','F',47.1],
 
-    <input
-        id="search"
-        class="search"
-        placeholder="🔎 Search hero..."
-        oninput="renderHeroes()"
-    >
+  ['Carmilla','Support, Tank','A',52.0],
+  ['Cecilion','Mage','B',50.0],
+  ["Chang'e",'Mage','C',48.4],
+  ['Chip','Support, Tank','C',48.0],
+  ['Chou','Fighter','F',45.4],
+  ['Cici','Fighter','F',46.3],
+  ['Claude','Marksman','C',46.6],
+  ['Clint','Marksman','C',48.0],
+  ['Cyclops','Mage','B',51.0],
 
-    <div id="heroGrid" class="hero-grid"></div>
-</div>
+  ['Diggie','Support','A',53.4],
+  ['Dyrroth','Fighter','B',50.3],
+  ['Edith','Tank, Marksman','B',50.9],
+  ['Esmeralda','Tank, Mage','C',48.5],
+  ['Estes','Support','S',54.4],
+  ['Eudora','Mage','A',52.5],
 
-<div class="card result" id="result">
-    <h2 id="resultTitle"></h2>
+  ['Fanny','Assassin','F',41.9],
+  ['Faramis','Support, Mage','B',50.5],
+  ['Floryn','Support','S',53.7],
+  ['Franco','Tank','F',42.7],
+  ['Fredrinn','Fighter, Tank','A',51.7],
+  ['Freya','Fighter','C',47.5],
 
-    <div class="build-grid">
+  ['Gatotkaca','Tank, Fighter','F',45.8],
+  ['Gloo','Tank','S',54.5],
+  ['Gord','Mage','A',52.2],
+  ['Granger','Marksman','F',41.5],
+  ['Grock','Tank, Fighter','F',46.8],
+  ['Guinevere','Fighter','B',50.8],
+  ['Gusion','Assassin','B',48.9],
 
-        <div class="info-box">
-            <h3>⚔️ Recommended Build</h3>
-            <div id="build"></div>
-        </div>
+  ['Hanabi','Marksman','A',52.7],
+  ['Hanzo','Assassin','B',49.7],
+  ['Harith','Mage','F',45.6],
+  ['Harley','Assassin, Mage','C',47.9],
+  ['Hayabusa','Assassin','B',48.7],
+  ['Helcurt','Assassin','C',47.8],
+  ['Hilda','Fighter, Tank','B',50.7],
+  ['Hirara','Assassin','A',52.1],
+  ['Hylos','Tank','C',47.6],
 
-        <div class="info-box">
-            <h3>🧠 Emblem</h3>
-            <div id="emblem"></div>
-        </div>
+  ['Irithel','Marksman','B',51.0],
+  ['Ixia','Marksman','C',48.0],
 
-        <div class="info-box">
-            <h3>⚡ Battle Spell</h3>
-            <div id="spell"></div>
-        </div>
+  ['Jawhead','Fighter','C',47.7],
+  ['Johnson','Tank, Support','B',49.7],
+  ['Joy','Assassin','C',48.9],
+  ['Julian','Assassin, Fighter','B',50.1],
 
-        <div class="info-box">
-            <h3>📌 Playstyle</h3>
-            <div id="playstyle" class="tip"></div>
-        </div>
+  ['Kadita','Mage, Assassin','A',51.3],
+  ['Kagura','Mage','B',51.4],
+  ['Kaja','Support','C',47.6],
+  ['Kalea','Support, Fighter','F',43.3],
+  ['Karina','Assassin','F',46.3],
+  ['Karrie','Marksman','F',46.5],
+  ['Khaleed','Fighter','B',50.9],
+  ['Khufra','Tank','S',54.5],
+  ['Kimmy','Marksman, Mage','C',47.6],
 
-    </div>
-</div>
+  ['Lancelot','Assassin','F',42.8],
+  ['Lapu-Lapu','Fighter','C',48.4],
+  ['Layla','Marksman','C',47.5],
+  ['Leomord','Fighter','B',50.6],
+  ['Lesley','Marksman, Assassin','C',46.5],
+  ['Ling','Assassin','A',52.1],
+  ['Lolita','Support, Tank','A',53.9],
+  ['Lukas','Fighter','A',53.3],
+  ['Lunox','Mage','C',49.0],
+  ['Luo Yi','Mage','F',47.1],
+  ['Lylia','Mage','C',49.0],
 
-</div>
+  ['Marcel','Support','S+',58.7],
+  ['Martis','Fighter','C',47.7],
+  ['Masha','Fighter, Tank','S',56.6],
+  ['Mathilda','Support, Assassin','F',44.5],
+  ['Melissa','Marksman','S',56.9],
+  ['Minotaur','Tank, Support','S',54.5],
+  ['Minsitthar','Fighter','A',51.0],
+  ['Miya','Marksman','S',53.3],
+  ['Moskov','Marksman','C',48.7],
 
-<footer>
-    KronAI V0.3 • Prototype Recommendation Engine
-</footer>
+  ['Nana','Mage','C',47.3],
+  ['Natalia','Assassin','B',51.3],
+  ['Natan','Marksman','C',49.5],
+  ['Nolan','Assassin','C',48.7],
+  ['Novaria','Mage','B',49.0],
 
+  ['Obsidia','Marksman','B',50.2],
+  ['Odette','Mage','B',50.5],
 
-<script>
+  ['Paquito','Fighter, Assassin','A',50.9],
+  ['Pharsa','Mage','C',47.2],
+  ['Phoveus','Fighter','C',47.8],
+  ['Popol and Kupa','Marksman','B',52.0],
 
-/* =========================================================
-   KRONAI HERO DATABASE
-   Current working roster: 133 heroes
-========================================================= */
+  ['Rafaela','Support','S+',58.6],
+  ['Roger','Fighter, Marksman','C',48.9],
+  ['Ruby','Fighter','C',49.0],
 
-const heroes = [
+  ['Saber','Assassin','B',50.3],
+  ['Selena','Assassin, Mage','C',48.4],
+  ['Silvanna','Fighter','A',51.5],
+  ['Sora','Fighter, Assassin','B',49.4],
+  ['Sun','Fighter','A',53.0],
+  ['Suyou','Assassin, Fighter','B',49.4],
 
-/* EXP */
-{name:"Aldous",lane:"EXP",role:"Fighter",tier:"B"},
-{name:"Alice",lane:"EXP",role:"Tank/Mage",tier:"B"},
-{name:"Argus",lane:"EXP",role:"Fighter",tier:"S"},
-{name:"Arlott",lane:"EXP",role:"Fighter/Assassin",tier:"C"},
-{name:"Badang",lane:"EXP",role:"Fighter",tier:"B"},
-{name:"Benedetta",lane:"EXP",role:"Assassin/Fighter",tier:"A"},
-{name:"Chou",lane:"EXP",role:"Fighter",tier:"D"},
-{name:"Cici",lane:"EXP",role:"Fighter",tier:"D"},
-{name:"Dyrroth",lane:"EXP",role:"Fighter",tier:"B"},
-{name:"Edith",lane:"EXP",role:"Tank/Marksman",tier:"B"},
-{name:"Esmeralda",lane:"EXP",role:"Tank/Mage",tier:"C"},
-{name:"Freya",lane:"EXP",role:"Fighter",tier:"C"},
-{name:"Guinevere",lane:"EXP",role:"Fighter",tier:"B"},
-{name:"Hilda",lane:"EXP",role:"Fighter/Tank",tier:"B"},
-{name:"Julian",lane:"EXP",role:"Assassin/Fighter",tier:"B"},
-{name:"Khaleed",lane:"EXP",role:"Fighter",tier:"B"},
-{name:"Lapu-Lapu",lane:"EXP",role:"Fighter",tier:"C"},
-{name:"Leomord",lane:"EXP",role:"Fighter",tier:"B"},
-{name:"Lukas",lane:"EXP",role:"Fighter",tier:"A"},
-{name:"Masha",lane:"EXP",role:"Fighter/Tank",tier:"S"},
-{name:"Minsitthar",lane:"EXP",role:"Fighter",tier:"A"},
-{name:"Paquito",lane:"EXP",role:"Fighter/Assassin",tier:"A"},
-{name:"Phoveus",lane:"EXP",role:"Fighter",tier:"C"},
-{name:"Ruby",lane:"EXP",role:"Fighter",tier:"C"},
-{name:"Silvanna",lane:"EXP",role:"Fighter",tier:"A"},
-{name:"Sora",lane:"EXP",role:"Fighter/Assassin",tier:"B"},
-{name:"Sun",lane:"EXP",role:"Fighter",tier:"A"},
-{name:"Terizla",lane:"EXP",role:"Fighter/Tank",tier:"B"},
-{name:"Thamuz",lane:"EXP",role:"Fighter",tier:"B"},
-{name:"Uranus",lane:"EXP",role:"Tank",tier:"B"},
-{name:"X.Borg",lane:"EXP",role:"Fighter",tier:"B"},
-{name:"Yu Zhong",lane:"EXP",role:"Fighter",tier:"C"},
-{name:"Zilong",lane:"EXP",role:"Fighter/Assassin",tier:"D"},
+  ['Terizla','Fighter, Tank','B',50.5],
+  ['Thamuz','Fighter','B',49.3],
+  ['Tigreal','Tank','F',45.7],
 
-/* JUNGLE */
-{name:"Aamon",lane:"Jungle",role:"Assassin",tier:"B"},
-{name:"Alpha",lane:"Jungle",role:"Fighter",tier:"D"},
-{name:"Alucard",lane:"Jungle",role:"Fighter/Assassin",tier:"C"},
-{name:"Aulus",lane:"Jungle",role:"Fighter",tier:"B"},
-{name:"Balmond",lane:"Jungle",role:"Fighter",tier:"C"},
-{name:"Bane",lane:"Jungle",role:"Fighter/Mage",tier:"B"},
-{name:"Barats",lane:"Jungle",role:"Tank/Fighter",tier:"A"},
-{name:"Baxia",lane:"Jungle",role:"Tank",tier:"D"},
-{name:"Fanny",lane:"Jungle",role:"Assassin",tier:"D"},
-{name:"Fredrinn",lane:"Jungle",role:"Fighter/Tank",tier:"A"},
-{name:"Harley",lane:"Jungle",role:"Assassin/Mage",tier:"C"},
-{name:"Hanzo",lane:"Jungle",role:"Assassin",tier:"B"},
-{name:"Hayabusa",lane:"Jungle",role:"Assassin",tier:"B"},
-{name:"Hirara",lane:"Jungle",role:"Assassin",tier:"A"},
-{name:"Joy",lane:"Jungle",role:"Assassin",tier:"C"},
-{name:"Karina",lane:"Jungle",role:"Assassin",tier:"D"},
-{name:"Lancelot",lane:"Jungle",role:"Assassin",tier:"D"},
-{name:"Ling",lane:"Jungle",role:"Assassin",tier:"A"},
-{name:"Martis",lane:"Jungle",role:"Fighter",tier:"C"},
-{name:"Nolan",lane:"Jungle",role:"Assassin",tier:"C"},
-{name:"Roger",lane:"Jungle",role:"Fighter/Marksman",tier:"C"},
-{name:"Saber",lane:"Jungle",role:"Assassin",tier:"B"},
-{name:"Suyou",lane:"Jungle",role:"Assassin/Fighter",tier:"B"},
-{name:"Yi Sun-shin",lane:"Jungle",role:"Assassin/Marksman",tier:"A"},
-{name:"Yin",lane:"Jungle",role:"Fighter/Assassin",tier:"B"},
+  ['Uranus','Tank','B',50.4],
 
-/* MID */
-{name:"Aurora",lane:"Mid",role:"Mage",tier:"C"},
-{name:"Cecilion",lane:"Mid",role:"Mage",tier:"B"},
-{name:"Chang'e",lane:"Mid",role:"Mage",tier:"C"},
-{name:"Cyclops",lane:"Mid",role:"Mage",tier:"B"},
-{name:"Eudora",lane:"Mid",role:"Mage",tier:"A"},
-{name:"Faramis",lane:"Mid",role:"Support/Mage",tier:"B"},
-{name:"Gord",lane:"Mid",role:"Mage",tier:"A"},
-{name:"Harith",lane:"Mid",role:"Mage",tier:"D"},
-{name:"Kagura",lane:"Mid",role:"Mage",tier:"B"},
-{name:"Kadita",lane:"Mid",role:"Mage/Assassin",tier:"A"},
-{name:"Lunox",lane:"Mid",role:"Mage",tier:"C"},
-{name:"Luo Yi",lane:"Mid",role:"Mage",tier:"D"},
-{name:"Lylia",lane:"Mid",role:"Mage",tier:"C"},
-{name:"Nana",lane:"Mid",role:"Mage",tier:"C"},
-{name:"Novaria",lane:"Mid",role:"Mage",tier:"B"},
-{name:"Odette",lane:"Mid",role:"Mage",tier:"B"},
-{name:"Pharsa",lane:"Mid",role:"Mage",tier:"C"},
-{name:"Selena",lane:"Mid",role:"Assassin/Mage",tier:"C"},
-{name:"Valentina",lane:"Mid",role:"Mage",tier:"D"},
-{name:"Valir",lane:"Mid",role:"Mage",tier:"A"},
-{name:"Vale",lane:"Mid",role:"Mage",tier:"B"},
-{name:"Vexana",lane:"Mid",role:"Mage",tier:"B"},
-{name:"Xavier",lane:"Mid",role:"Mage",tier:"C"},
-{name:"Yve",lane:"Mid",role:"Mage",tier:"B"},
-{name:"Zetian",lane:"Mid",role:"Mage",tier:"A"},
-{name:"Zhask",lane:"Mid",role:"Mage",tier:"B"},
-{name:"Zhuxin",lane:"Mid",role:"Mage",tier:"C"},
+  ['Vale','Mage','B',50.6],
+  ['Valentina','Mage','F',45.2],
+  ['Valir','Mage','A',52.5],
+  ['Vexana','Mage','B',50.3],
 
-/* GOLD */
-{name:"Beatrix",lane:"Gold",role:"Marksman",tier:"B"},
-{name:"Brody",lane:"Gold",role:"Marksman",tier:"C"},
-{name:"Bruno",lane:"Gold",role:"Marksman",tier:"D"},
-{name:"Claude",lane:"Gold",role:"Marksman",tier:"C"},
-{name:"Clint",lane:"Gold",role:"Marksman",tier:"C"},
-{name:"Granger",lane:"Gold",role:"Marksman",tier:"D"},
-{name:"Hanabi",lane:"Gold",role:"Marksman",tier:"A"},
-{name:"Irithel",lane:"Gold",role:"Marksman",tier:"B"},
-{name:"Ixia",lane:"Gold",role:"Marksman",tier:"C"},
-{name:"Karrie",lane:"Gold",role:"Marksman",tier:"D"},
-{name:"Kimmy",lane:"Gold",role:"Marksman/Mage",tier:"C"},
-{name:"Layla",lane:"Gold",role:"Marksman",tier:"C"},
-{name:"Lesley",lane:"Gold",role:"Marksman/Assassin",tier:"C"},
-{name:"Melissa",lane:"Gold",role:"Marksman",tier:"S"},
-{name:"Miya",lane:"Gold",role:"Marksman",tier:"S"},
-{name:"Moskov",lane:"Gold",role:"Marksman",tier:"C"},
-{name:"Natan",lane:"Gold",role:"Marksman",tier:"C"},
-{name:"Obsidia",lane:"Gold",role:"Marksman",tier:"B"},
-{name:"Popol and Kupa",lane:"Gold",role:"Marksman",tier:"B"},
-{name:"Wanwan",lane:"Gold",role:"Marksman",tier:"D"},
+  ['Wanwan','Marksman','F',45.6],
 
-/* ROAM */
-{name:"Akai",lane:"Roam",role:"Tank",tier:"B"},
-{name:"Angela",lane:"Roam",role:"Support",tier:"B"},
-{name:"Atlas",lane:"Roam",role:"Tank",tier:"A"},
-{name:"Belerick",lane:"Roam",role:"Tank",tier:"S"},
-{name:"Carmilla",lane:"Roam",role:"Support/Tank",tier:"A"},
-{name:"Chip",lane:"Roam",role:"Support/Tank",tier:"C"},
-{name:"Diggie",lane:"Roam",role:"Support",tier:"A"},
-{name:"Estes",lane:"Roam",role:"Support",tier:"S"},
-{name:"Floryn",lane:"Roam",role:"Support",tier:"S"},
-{name:"Franco",lane:"Roam",role:"Tank",tier:"D"},
-{name:"Gatotkaca",lane:"Roam",role:"Tank/Fighter",tier:"D"},
-{name:"Gloo",lane:"Roam",role:"Tank",tier:"S"},
-{name:"Grock",lane:"Roam",role:"Tank/Fighter",tier:"D"},
-{name:"Johnson",lane:"Roam",role:"Tank/Support",tier:"B"},
-{name:"Kaja",lane:"Roam",role:"Support",tier:"C"},
-{name:"Kalea",lane:"Roam",role:"Support/Fighter",tier:"D"},
-{name:"Khufra",lane:"Roam",role:"Tank",tier:"S"},
-{name:"Lolita",lane:"Roam",role:"Support/Tank",tier:"A"},
-{name:"Marcel",lane:"Roam",role:"Support",tier:"S"},
-{name:"Mathilda",lane:"Roam",role:"Support/Assassin",tier:"D"},
-{name:"Minotaur",lane:"Roam",role:"Tank/Support",tier:"S"},
-{name:"Rafaela",lane:"Roam",role:"Support",tier:"S"},
-{name:"Tigreal",lane:"Roam",role:"Tank",tier:"C"}
+  ['X.Borg','Fighter','B',49.9],
+  ['Xavier','Mage','C',48.5],
+
+  ['Yi Sun-shin','Assassin, Marksman','A',52.0],
+  ['Yin','Fighter, Assassin','B',49.1],
+  ['Yu Zhong','Fighter','C',48.9],
+  ['Yve','Mage','B',51.3],
+
+  ['Zetian','Mage','A',50.8],
+  ['Zhask','Mage','B',51.9],
+  ['Zhuxin','Mage','C',47.9],
+  ['Zilong','Fighter, Assassin','F',46.4]
 ];
 
 
 /* =========================================================
-   DEFAULT RECOMMENDATIONS
-========================================================= */
+   LANE ASSIGNMENTS
+   A hero can appear in more than one lane.
+   ========================================================= */
 
-const templates = {
+const laneMap = {
 
-EXP: {
-    build:[
-        "Tough Boots / Warrior Boots",
-        "War Axe",
-        "Queen's Wings",
-        "Oracle",
-        "Antique Cuirass",
-        "Immortality"
-    ],
-    emblem:"Fighter Emblem • Firmness • Festival of Blood • Brave Smite",
-    spell:"Flicker / Vengeance",
-    playstyle:"Farm safely, contest Turtle-side pressure, watch the map and join fights when your team can actually convert your pressure."
-},
+  Aamon:['Jungle'],
+  Akai:['Jungle','Roam'],
+  Aldous:['EXP'],
+  Alice:['EXP','Mid'],
+  Alpha:['Jungle','EXP'],
+  Alucard:['Jungle'],
+  Angela:['Roam'],
+  Argus:['EXP'],
+  Arlott:['EXP'],
+  Atlas:['Roam'],
+  Aulus:['Jungle'],
 
-Jungle:{
-    build:[
-        "Tough Boots",
-        "Jungle Damage Item",
-        "Hunter Strike",
-        "War Axe",
-        "Malefic Roar",
-        "Immortality"
-    ],
-    emblem:"Assassin/Fighter Emblem • Adaptive Attack • Penetration • Killing Spree",
-    spell:"Retribution",
-    playstyle:"Prioritize farm efficiency, Turtle/Lord timing and enemy backline access. Do not throw your life away for random kills."
-},
+  Aurora:['Mid'],
+  Badang:['EXP'],
+  Balmond:['Jungle','EXP'],
+  Bane:['Jungle','Mid'],
+  Barats:['Jungle','EXP'],
+  Baxia:['Jungle','Roam'],
+  Beatrix:['Gold'],
+  Belerick:['Roam'],
+  Benedetta:['EXP','Jungle'],
+  Brody:['Gold'],
+  Bruno:['Gold'],
 
-Mid:{
-    build:[
-        "Arcane Boots",
-        "Glowing Wand",
-        "Holy Crystal",
-        "Divine Glaive",
-        "Blood Wings",
-        "Winter Crown"
-    ],
-    emblem:"Mage Emblem • Rupture • Wilderness Blessing • Lethal Ignition",
-    spell:"Flicker / Purify",
-    playstyle:"Clear waves quickly, rotate with your roamer and punish enemies who reveal themselves on the map."
-},
+  Carmilla:['Roam'],
+  Cecilion:['Mid'],
+  "Chang'e":['Mid'],
+  Chip:['Roam'],
+  Chou:['EXP','Roam'],
+  Cici:['EXP'],
+  Claude:['Gold'],
+  Clint:['Gold'],
+  Cyclops:['Mid','Jungle'],
 
-Gold:{
-    build:[
-        "Swift Boots",
-        "Demon Hunter Sword",
-        "Golden Staff",
-        "Wind of Nature",
-        "Malefic Roar",
-        "Immortality"
-    ],
-    emblem:"Marksman Emblem • Fatal • Weapons Master • Quantum Charge",
-    spell:"Flicker / Purify",
-    playstyle:"Prioritize gold and safe positioning. Your life is more valuable than forcing a bad early fight."
-},
+  Diggie:['Roam'],
+  Dyrroth:['EXP','Jungle'],
+  Edith:['Roam','EXP'],
+  Esmeralda:['EXP'],
+  Estes:['Roam'],
+  Eudora:['Mid'],
 
-Roam:{
-    build:[
-        "Tough Boots",
-        "Dominance Ice",
-        "Antique Cuirass",
-        "Radiant Armor",
-        "Athena's Shield",
-        "Immortality"
-    ],
-    emblem:"Tank/Support Emblem • Firmness • Wilderness Blessing • Concussive Blast",
-    spell:"Flicker / Vengeance",
-    playstyle:"Control vision, protect your damage dealers and create fights your team can actually follow."
-}
+  Fanny:['Jungle'],
+  Faramis:['Mid','Roam'],
+  Floryn:['Roam'],
+  Franco:['Roam'],
+  Fredrinn:['Jungle','EXP'],
+  Freya:['EXP'],
 
+  Gatotkaca:['Roam','EXP'],
+  Gloo:['EXP','Roam'],
+  Gord:['Mid'],
+  Granger:['Jungle'],
+  Grock:['Roam','EXP'],
+  Guinevere:['EXP','Jungle'],
+  Gusion:['Jungle'],
+
+  Hanabi:['Gold'],
+  Hanzo:['Jungle'],
+  Harith:['Gold','Mid'],
+  Harley:['Jungle'],
+  Hayabusa:['Jungle'],
+  Helcurt:['Jungle'],
+  Hilda:['Roam','EXP'],
+  Hirara:['Jungle'],
+  Hylos:['Roam'],
+
+  Irithel:['Gold'],
+  Ixia:['Gold'],
+
+  Jawhead:['EXP','Jungle','Roam'],
+  Johnson:['Roam'],
+  Joy:['Jungle','EXP'],
+  Julian:['Jungle'],
+
+  Kadita:['Mid','Roam'],
+  Kagura:['Mid'],
+  Kaja:['Roam'],
+  Kalea:['Roam'],
+  Karina:['Jungle'],
+  Karrie:['Gold'],
+  Khaleed:['EXP'],
+  Khufra:['Roam'],
+  Kimmy:['Gold','Mid'],
+
+  Lancelot:['Jungle'],
+  'Lapu-Lapu':['EXP'],
+  Layla:['Gold'],
+  Leomord:['EXP','Jungle'],
+  Lesley:['Gold'],
+  Ling:['Jungle'],
+  Lolita:['Roam'],
+  Lukas:['EXP'],
+  Lunox:['Mid','Gold'],
+  'Luo Yi':['Mid'],
+  Lylia:['Mid'],
+
+  Marcel:['Roam'],
+  Martis:['Jungle','EXP'],
+  Masha:['EXP'],
+  Mathilda:['Roam'],
+  Melissa:['Gold'],
+  Minotaur:['Roam'],
+  Minsitthar:['EXP'],
+  Miya:['Gold'],
+  Moskov:['Gold'],
+
+  Nana:['Mid'],
+  Natalia:['Roam','Jungle'],
+  Natan:['Gold'],
+  Nolan:['Jungle'],
+  Novaria:['Mid'],
+
+  Obsidia:['Gold'],
+  Odette:['Mid'],
+
+  Paquito:['EXP','Jungle'],
+  Pharsa:['Mid'],
+  Phoveus:['EXP'],
+  'Popol and Kupa':['Gold','Jungle'],
+
+  Rafaela:['Roam'],
+  Roger:['Jungle','Gold'],
+  Ruby:['EXP','Roam'],
+
+  Saber:['Jungle'],
+  Selena:['Roam','Jungle'],
+  Silvanna:['EXP'],
+  Sora:['EXP'],
+  Sun:['EXP','Jungle'],
+  Suyou:['Jungle','EXP'],
+
+  Terizla:['EXP'],
+  Thamuz:['EXP','Jungle'],
+  Tigreal:['Roam'],
+
+  Uranus:['EXP'],
+
+  Vale:['Mid'],
+  Valentina:['Mid'],
+  Valir:['Mid'],
+  Vexana:['Mid'],
+
+  Wanwan:['Gold'],
+
+  'X.Borg':['EXP'],
+  Xavier:['Mid'],
+
+  'Yi Sun-shin':['Jungle'],
+  Yin:['Jungle','EXP'],
+  'Yu Zhong':['EXP'],
+  Yve:['Mid'],
+
+  Zetian:['Mid'],
+  Zhask:['Mid'],
+  Zhuxin:['Mid'],
+  Zilong:['EXP','Jungle']
 };
 
 
 /* =========================================================
-   HERO-SPECIFIC OVERRIDES
-========================================================= */
+   CONVERT RAW ROSTER INTO KRONAI HERO OBJECTS
+   ========================================================= */
 
-const special = {
+const heroes = roster.map(([name, role, tier, winRate]) => {
+
+  const lanes = laneMap[name] || [];
+
+  return {
+    id:name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g,'-')
+      .replace(/^-|-$/g,''),
+
+    name,
+    role,
+    tier,
+    winRate,
+    lanes
+  };
+});
+
+
+/* =========================================================
+   LANE LIST
+   ========================================================= */
+
+const LANES = [
+  'All',
+  'EXP',
+  'Gold',
+  'Jungle',
+  'Mid',
+  'Roam'
+];
+
+
+/* =========================================================
+   HELPER FUNCTIONS
+   ========================================================= */
+
+function heroInitials(name){
+
+  if(name === 'Popol and Kupa') return 'PK';
+
+  const words = name.split(' ').filter(Boolean);
+
+  if(words.length >= 2){
+    return (
+      words[0][0] +
+      words[1][0]
+    ).toUpperCase();
+  }
+
+  return name.slice(0,2).toUpperCase();
+}
+
+
+function heroHue(name){
+
+  let total = 0;
+
+  for(let i=0;i<name.length;i++){
+    total += name.charCodeAt(i) * (i + 1);
+  }
+
+  return total % 360;
+}
+
+
+function tierClass(tier){
+
+  const classes = {
+    'S+':'tier-splus',
+    'S':'tier-s',
+    'A':'tier-a',
+    'B':'tier-b',
+    'C':'tier-c',
+    'F':'tier-f'
+  };
+
+  return classes[tier] || 'tier-c';
+}
+
+
+function primaryLane(hero){
+
+  if(!hero.lanes || !hero.lanes.length){
+    return 'Flex';
+  }
+
+  return hero.lanes[0];
+}
+
+
+/* =========================================================
+   DATA CHECK
+   ========================================================= */
+
+console.log(
+  '⚡ KronAI loaded:',
+  heroes.length,
+  'heroes'
+);
+
+      const buildData = {
+Assassin:{
+items:['Tough Boots','Blade of the Heptaseas','Hunter Strike','Malefic Roar','Blade of Despair','Immortality'],
+emblem:'Assassin Emblem',
+talents:['Rupture','Seasoned Hunter','Killing Spree'],
+spell:'Retribution'
+},
+Fighter:{
+items:['Tough Boots','War Axe','Hunter Strike','Brute Force Breastplate','Queen’s Wings','Immortality'],
+emblem:'Fighter Emblem',
+talents:['Firmness','Festival of Blood','Brave Smite'],
+spell:'Vengeance'
+},
+Mage:{
+items:['Arcane Boots','Genius Wand','Holy Crystal','Divine Glaive','Blood Wings','Winter Crown'],
+emblem:'Mage Emblem',
+talents:['Inspire','Wilderness Blessing','Lethal Ignition'],
+spell:'Flicker'
+},
+Marksman:{
+items:['Swift Boots','Windtalker','Berserker’s Fury','Haas’s Claws','Malefic Roar','Wind of Nature'],
+emblem:'Marksman Emblem',
+talents:['Fatal','Weapon Master','Quantum Charge'],
+spell:'Flicker'
+},
+Tank:{
+items:['Tough Boots','Dominance Ice','Radiant Armor','Antique Cuirass','Athena’s Shield','Immortality'],
+emblem:'Tank Emblem',
+talents:['Vitality','Tenacity','Brave Smite'],
+spell:'Flicker'
+},
+Support:{
+items:['Tough Boots','Flask of the Oasis','Oracle','Dominance Ice','Radiant Armor','Immortality'],
+emblem:'Support Emblem',
+talents:['Agility','Pull Yourself Together','Focusing Mark'],
+spell:'Flicker'
+}
+};
+
+const heroBuilds = {
+Fanny:{
+items:['Tough Boots','Blade of the Heptaseas','Malefic Roar','Hunter Strike','Blade of Despair','Immortality'],
+emblem:'Assassin Emblem',
+talents:['Rupture','Seasoned Hunter','Killing Spree'],
+spell:'Retribution',
+why:'High-mobility jungle setup focused on penetration, burst and snowballing.'
+},
 
 Thamuz:{
-    build:[
-        "Tough Boots",
-        "Corrosion Scythe",
-        "War Axe",
-        "Oracle",
-        "Queen's Wings",
-        "Immortality"
-    ],
-    emblem:"Fighter Emblem • Firmness • Festival of Blood • Brave Smite",
-    spell:"Vengeance",
-    playstyle:"Pressure the lane, abuse sustained damage and keep your ultimate for extended fights."
-},
-
-Paquito:{
-    build:[
-        "Tough Boots",
-        "War Axe",
-        "Hunter Strike",
-        "Blade of Despair",
-        "Malefic Roar",
-        "Immortality"
-    ],
-    emblem:"Fighter Emblem • Rupture • Festival of Blood • Killing Spree",
-    spell:"Flicker",
-    playstyle:"Use enhanced skills deliberately. Burst the backline and disengage before the enemy collapses."
-},
-
-Fanny:{
-    build:[
-        "Tough Boots",
-        "Hunter Strike",
-        "Blade of Despair",
-        "Malefic Roar",
-        "Rose Gold Meteor",
-        "Immortality"
-    ],
-    emblem:"Assassin Emblem • Rupture • Seasoned Hunter • Killing Spree",
-    spell:"Retribution",
-    playstyle:"Farm efficiently, track enemy CC and cables, then look for isolated targets."
-},
-
-Ling:{
-    build:[
-        "Tough Boots",
-        "Berserker's Fury",
-        "Haas' Claws",
-        "Blade of Despair",
-        "Malefic Roar",
-        "Immortality"
-    ],
-    emblem:"Assassin Emblem • Rupture • Seasoned Hunter • Killing Spree",
-    spell:"Retribution",
-    playstyle:"Use walls for mobility and wait for enemy CC to be committed before diving."
-},
-
-Gusion:{
-    build:[
-        "Arcane Boots",
-        "Genius Wand",
-        "Holy Crystal",
-        "Divine Glaive",
-        "Blood Wings",
-        "Winter Crown"
-    ],
-    emblem:"Assassin Emblem • Rupture • Seasoned Hunter • Killing Spree",
-    spell:"Retribution / Execute",
-    playstyle:"Burst squishy targets, reset your positioning and avoid wasting your combo on tanks."
+items:['Warrior Boots','Corrosion Scythe','War Axe','Oracle','Queen’s Wings','Immortality'],
+emblem:'Fighter Emblem',
+talents:['Firmness','Festival of Blood','Brave Smite'],
+spell:'Vengeance',
+why:'Durable EXP setup that lets Thamuz stay in extended fights while maintaining pressure.'
 },
 
 Hirara:{
-    build:[
-        "Arcane Boots",
-        "Genius Wand",
-        "Glowing Wand",
-        "Holy Crystal",
-        "Divine Glaive",
-        "Winter Crown"
-    ],
-    emblem:"Assassin Emblem • Rupture • Seasoned Hunter • Killing Spree",
-    spell:"Retribution",
-    playstyle:"Play as a high-damage pickoff assassin. Enter after key enemy CC is used and prioritize the backline."
+items:['Arcane Boots','Genius Wand','Glowing Wand','Holy Crystal','Divine Glaive','Blood Wings'],
+emblem:'Mage Emblem',
+talents:['Inspire','Wilderness Blessing','Lethal Ignition'],
+spell:'Flicker',
+why:'Burst-oriented setup built around ability damage, cooldown access and magic penetration.'
 },
 
-Belerick:{
-    build:[
-        "Tough Boots",
-        "Dominance Ice",
-        "Cursed Helmet",
-        "Radiant Armor",
-        "Athena's Shield",
-        "Immortality"
-    ],
-    emblem:"Tank Emblem • Firmness • Wilderness Blessing • Concussive Blast",
-    spell:"Vengeance",
-    playstyle:"Absorb pressure, protect carries and punish enemies who rely heavily on basic attacks."
+Marcel:{
+items:['Tough Boots','Flask of the Oasis','Oracle','Dominance Ice','Radiant Armor','Immortality'],
+emblem:'Support Emblem',
+talents:['Agility','Pull Yourself Together','Focusing Mark'],
+spell:'Flicker',
+why:'Utility-focused Roam setup designed to keep the team alive and improve prolonged fights.'
 },
 
-Edith:{
-    build:[
-        "Tough Boots",
-        "Dominance Ice",
-        "Athena's Shield",
-        "Radiant Armor",
-        "Holy Crystal",
-        "Divine Glaive"
-    ],
-    emblem:"Tank Emblem • Firmness • Bargain Hunter • Concussive Blast",
-    spell:"Flicker",
-    playstyle:"Build defenses in human form, stack passive energy and transform when you can safely deal damage."
+Rafaela:{
+items:['Tough Boots','Flask of the Oasis','Oracle','Fleeting Time','Dominance Ice','Immortality'],
+emblem:'Support Emblem',
+talents:['Agility','Pull Yourself Together','Focusing Mark'],
+spell:'Flicker',
+why:'High-utility support setup focused on healing, cooldown reduction and team utility.'
+},
+
+Gloo:{
+items:['Tough Boots','Dominance Ice','Radiant Armor','Antique Cuirass','Guardian Helmet','Immortality'],
+emblem:'Tank Emblem',
+talents:['Vitality','Tenacity','Brave Smite'],
+spell:'Flicker',
+why:'Frontline setup focused on durability and sustained teamfight pressure.'
+},
+
+Melissa:{
+items:['Swift Boots','Demon Hunter Sword','Golden Staff','Berserker’s Fury','Malefic Roar','Wind of Nature'],
+emblem:'Marksman Emblem',
+talents:['Fatal','Weapon Master','Quantum Charge'],
+spell:'Flicker',
+why:'Attack-speed and on-hit setup that gives strong sustained Gold Lane damage.'
 }
-
 };
 
-
-/* =========================================================
-   APP LOGIC
-========================================================= */
-
-let currentLane = "";
-
-function selectLane(lane,button){
-
-    currentLane = lane;
-
-    document.querySelectorAll(".lane-btn")
-        .forEach(btn => btn.classList.remove("active"));
-
-    button.classList.add("active");
-
-    document.getElementById("heroSection").style.display = "block";
-
-    document.getElementById("laneTitle").innerText =
-        lane + " Lane Heroes";
-
-    document.getElementById("search").value = "";
-
-    document.getElementById("result").classList.remove("show");
-
-    renderHeroes();
-
-    window.scrollTo({
-        top: document.getElementById("heroSection").offsetTop - 15,
-        behavior:"smooth"
-    });
+function getHero(name){
+return roster.find(hero=>hero[0]===name);
 }
 
+function getHeroRole(name){
+const hero=getHero(name);
+return hero ? hero[1] : 'Unknown';
+}
 
-function renderHeroes(){
+function getHeroTier(name){
+const hero=getHero(name);
+return hero ? hero[2] : 'C';
+}
 
-    const grid = document.getElementById("heroGrid");
+function getHeroWinrate(name){
+const hero=getHero(name);
+return hero ? hero[3] : 0;
+}
 
-    const search =
-        document.getElementById("search")
-        .value
-        .toLowerCase();
+function getHeroLanes(name){
+return laneMap[name] || [];
+}
 
-    const filtered = heroes.filter(hero =>
-        hero.lane === currentLane &&
-        hero.name.toLowerCase().includes(search)
+function getBaseRole(name){
+const role=getHeroRole(name);
+
+if(role.includes('Assassin')) return 'Assassin';
+if(role.includes('Marksman')) return 'Marksman';
+if(role.includes('Mage')) return 'Mage';
+if(role.includes('Support')) return 'Support';
+if(role.includes('Tank')) return 'Tank';
+return 'Fighter';
+}
+
+function getBuild(name){
+if(heroBuilds[name]) return heroBuilds[name];
+
+const role=getBaseRole(name);
+return {
+...buildData[role],
+why:`Recommended ${role.toLowerCase()} setup based on ${name}’s current role and lane profile.`
+};
+}
+
+const tierDescriptions={
+'S+':'Strongest meta picks. High priority choices for the current patch.',
+'S':'Excellent meta picks with strong overall performance.',
+'A':'Solid meta picks with reliable strengths and good draft value.',
+'B':'Playable picks that can struggle against stronger meta choices.',
+'C':'Weaker in the current meta, but still usable in the right matchup.',
+'F':'Lowest priority picks in the current meta.'
+};
+
+const rankData={
+Legend:{
+label:'Legend',
+multiplier:0.90
+},
+Mythic:{
+label:'Mythic',
+multiplier:1.00
+},
+'Mythic Honor':{
+label:'Mythic Honor',
+multiplier:1.08
+},
+'Mythic Glory':{
+label:'Mythic Glory',
+multiplier:1.16
+},
+'Mythic Immortal':{
+label:'Mythic Immortal',
+multiplier:1.24
+}
+};
+
+function getRankStats(hero,rank){
+const tier=hero[2];
+const winrate=hero[3];
+const data=rankData[rank] || rankData.Mythic;
+
+const tierBonus={
+'S+':1.55,
+'S':1.20,
+'A':0.70,
+'B':0.25,
+'C':-0.20,
+'F':-0.75
+}[tier] || 0;
+
+const rawPick=Math.max(
+0.15,
+(2.2 + data.multiplier * 0.9 + tierBonus * 0.7)
+);
+
+const rawBan=Math.max(
+0.05,
+(0.35 + data.multiplier * 0.55 + tierBonus * 0.9)
+);
+
+return {
+pick:+rawPick.toFixed(2),
+ban:+rawBan.toFixed(2),
+win:+(winrate + tierBonus * 0.55).toFixed(1)
+};
+}
+
+function initials(name){
+return name
+.split(' ')
+.filter(Boolean)
+.map(word=>word[0])
+.join('')
+.slice(0,3)
+.toUpperCase();
+}
+
+function hueFor(name){
+let total=0;
+
+for(let i=0;i<name.length;i++){
+total=(total+name.charCodeAt(i)*(i+7))%360;
+}
+
+return total;
+}
+
+function tierClass(tier){
+return {
+'S+':'tier-splus',
+'S':'tier-s',
+'A':'tier-a',
+'B':'tier-b',
+'C':'tier-c',
+'F':'tier-f'
+}[tier] || 'tier-c';
+}
+
+function sortTierHeroes(list){
+const order={'S+':0,'S':1,'A':2,'B':3,'C':4,'F':5};
+
+return [...list].sort((a,b)=>{
+const tierDiff=(order[a[2]] ?? 99)-(order[b[2]] ?? 99);
+
+if(tierDiff!==0) return tierDiff;
+
+return b[3]-a[3];
+});
+}
+
+function searchHeroes(query){
+const q=query.trim().toLowerCase();
+
+if(!q) return roster;
+
+return roster.filter(hero=>{
+const name=hero[0].toLowerCase();
+const role=hero[1].toLowerCase();
+const lanes=(laneMap[hero[0]] || []).join(' ').toLowerCase();
+
+return name.includes(q) || role.includes(q) || lanes.includes(q);
+});
+}
+    const { useMemo, useState } = React;
+
+function HeroCard({ hero, selected, onClick }) {
+  return (
+    <button
+      className={`hero-card ${selected ? "selected" : ""}`}
+      onClick={onClick}
+    >
+      <div
+        className="hero-avatar"
+        style={{ background: `linear-gradient(135deg, ${hueFor(hero.name)}, #101827)` }}
+      >
+        {initials(hero.name)}
+      </div>
+
+      <div className="hero-card-info">
+        <strong>{hero.name}</strong>
+        <span>{hero.tier}</span>
+      </div>
+    </button>
+  );
+}
+
+function Stat({ label, value }) {
+  return (
+    <div className="stat-box">
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  );
+}
+
+function InfoPanel({ title, children }) {
+  return (
+    <section className="info-panel">
+      <h3>{title}</h3>
+      {children}
+    </section>
+  );
+}
+
+function HeroProfile({ hero, rank }) {
+  if (!hero) {
+    return (
+      <div className="empty-profile">
+        <div className="empty-icon">⚡</div>
+        <h2>Select a hero</h2>
+        <p>Choose a hero to view builds, counters, skills and stats.</p>
+      </div>
     );
+  }
 
-    grid.innerHTML = "";
+  const stats = getRankStats(hero, rank);
+  const build = getBuild(hero);
 
-    if(filtered.length === 0){
-
-        grid.innerHTML =
-            "<p style='color:#8994b0'>No heroes found.</p>";
-
-        return;
+  const skills = [
+    {
+      name: "Passive",
+      text: `${hero.name}'s passive provides the core mechanic that defines the hero's playstyle.`
+    },
+    {
+      name: "Skill 1",
+      text: "Primary combat ability used for trading, clearing or setting up fights."
+    },
+    {
+      name: "Skill 2",
+      text: "Secondary ability used for mobility, control, damage or defensive utility."
+    },
+    {
+      name: "Ultimate",
+      text: "High-impact ability that should be timed around important team fights."
     }
+  ];
 
-    filtered.forEach(hero => {
+  return (
+    <div className="profile">
+      <div className="profile-header">
+        <div
+          className="profile-avatar"
+          style={{ background: `linear-gradient(135deg, ${hueFor(hero.name)}, #101827)` }}
+        >
+          {initials(hero.name)}
+        </div>
 
-        const card = document.createElement("div");
+        <div className="profile-title">
+          <div className="profile-name-row">
+            <h2>{hero.name}</h2>
+            <span className={`tier-badge ${tierClass(hero.tier)}`}>
+              {hero.tier}
+            </span>
+          </div>
 
-        card.className = "hero";
+          <p>{getHeroRole(hero)} • {hero.lanes.join(" / ")}</p>
+        </div>
+      </div>
 
-        card.onclick = () =>
-            showHero(hero);
+      <div className="stats-grid">
+        <Stat label="Win Rate" value={`${stats.winrate.toFixed(2)}%`} />
+        <Stat label="Pick Rate" value={`${stats.pick.toFixed(2)}%`} />
+        <Stat label="Ban Rate" value={`${stats.ban.toFixed(2)}%`} />
+        <Stat label="Rank" value={rank === "All Ranks" ? "Global" : rank} />
+      </div>
 
-        card.innerHTML = `
-            <div class="hero-name">${hero.name}</div>
-            <div class="hero-role">${hero.role}</div>
-            <div class="hero-tier">Tier ${hero.tier}</div>
-        `;
+      <InfoPanel title="Recommended Build">
+        <div className="build-list">
+          {build.items.map((item, index) => (
+            <div className="build-item" key={index}>
+              <span>{index + 1}</span>
+              <strong>{item}</strong>
+            </div>
+          ))}
+        </div>
 
-        grid.appendChild(card);
+        <div className="build-extra">
+          <div>
+            <small>Emblem</small>
+            <strong>{build.emblem}</strong>
+          </div>
+
+          <div>
+            <small>Talents</small>
+            <strong>{build.talents.join(" • ")}</strong>
+          </div>
+
+          <div>
+            <small>Battle Spell</small>
+            <strong>{build.spell}</strong>
+          </div>
+        </div>
+      </InfoPanel>
+
+      <InfoPanel title="Skills">
+        <div className="skills-list">
+          {skills.map((skill) => (
+            <div className="skill-row" key={skill.name}>
+              <div className="skill-icon">{skill.name[0]}</div>
+              <div>
+                <strong>{skill.name}</strong>
+                <p>{skill.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </InfoPanel>
+
+      <InfoPanel title="Counter Heroes">
+        <div className="counter-grid">
+          {hero.counters?.length
+            ? hero.counters.map((counter) => (
+                <div className="counter-card" key={counter}>
+                  <strong>{counter}</strong>
+                  <span>Counter pick</span>
+                </div>
+              ))
+            : (
+              <p className="muted">
+                Counter data will be expanded in the next database update.
+              </p>
+            )}
+        </div>
+      </InfoPanel>
+
+      <InfoPanel title="KronAI Recommendation">
+        <div className="coach-tip">
+          <span>⚡</span>
+          <p>
+            {hero.tier === "S+" || hero.tier === "S"
+              ? `${hero.name} is currently a strong meta option. Prioritize good positioning and play around the hero's strongest timing.`
+              : hero.tier === "A"
+              ? `${hero.name} is a solid meta pick. Draft it when the matchup and team composition support it.`
+              : hero.tier === "B"
+              ? `${hero.name} can work, but check the enemy draft carefully before committing.`
+              : `${hero.name} is currently less favored by the meta. Consider a stronger alternative if the draft allows it.`}
+          </p>
+        </div>
+      </InfoPanel>
+    </div>
+  );
+}
+
+function PageHeading({ title, subtitle }) {
+  return (
+    <div className="page-heading">
+      <div>
+        <h1>{title}</h1>
+        <p>{subtitle}</p>
+      </div>
+    </div>
+  );
+}
+
+function CoachAI({ selectedHero, setSelectedHero }) {
+  const [message, setMessage] = useState("");
+  const [chat, setChat] = useState([
+    {
+      from: "ai",
+      text: "Yo, I'm KronAI. Pick a hero or ask me about builds, counters, lanes or the current meta."
+    }
+  ]);
+
+  const sendMessage = () => {
+    const text = message.trim();
+
+    if (!text) return;
+
+    setChat((prev) => [
+      ...prev,
+      { from: "user", text },
+      {
+        from: "ai",
+        text: `KronAI analysis: ${selectedHero ? selectedHero.name : "your draft"} should be evaluated around matchup, role, team composition and current meta priority.`
+      }
+    ]);
+
+    setMessage("");
+  };
+
+  return (
+    <div className="coach-page">
+      <PageHeading
+        title="Coach AI"
+        subtitle="Your MLBB strategy assistant"
+      />
+
+      <div className="coach-layout">
+        <div className="chat-card">
+          <div className="chat-messages">
+            {chat.map((msg, index) => (
+              <div className={`chat-message ${msg.from}`} key={index}>
+                <div className="chat-avatar">
+                  {msg.from === "ai" ? "⚡" : "U"}
+                </div>
+
+                <div className="chat-bubble">
+                  {msg.text}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="chat-input-row">
+            <input
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") sendMessage();
+              }}
+              placeholder="Ask KronAI..."
+            />
+
+            <button onClick={sendMessage}>Send</button>
+          </div>
+        </div>
+
+        <div className="quick-actions">
+          <h3>Quick Analysis</h3>
+
+          <button onClick={() => setMessage("What should I build?")}>
+            🛠️ Recommended Build
+          </button>
+
+          <button onClick={() => setMessage("Who counters this hero?")}>
+            ⚔️ Find Counters
+          </button>
+
+          <button onClick={() => setMessage("Is this hero meta right now?")}>
+            📊 Meta Check
+          </button>
+
+          <button onClick={() => setMessage("What should I pick for this lane?")}>
+            🎯 Lane Recommendation
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DraftView() {
+  const [team, setTeam] = useState([]);
+  const [enemy, setEnemy] = useState([]);
+  const [search, setSearch] = useState("");
+
+  const filtered = useMemo(() => {
+    return searchHeroes(search).slice(0, 40);
+  }, [search]);
+
+  const addHero = (hero, side) => {
+    if (side === "team") {
+      if (!team.some((x) => x.name === hero.name) && team.length < 5) {
+        setTeam((prev) => [...prev, hero]);
+      }
+    } else {
+      if (!enemy.some((x) => x.name === hero.name) && enemy.length < 5) {
+        setEnemy((prev) => [...prev, hero]);
+      }
+    }
+  };
+
+  return (
+    <div>
+      <PageHeading
+        title="Draft Assistant"
+        subtitle="Build your lineup and analyze the enemy draft."
+      />
+
+      <div className="draft-board">
+        <div className="draft-side">
+          <h2>Your Team</h2>
+
+          <div className="draft-slots">
+            {[0, 1, 2, 3, 4].map((index) => (
+              <div className="draft-slot" key={index}>
+                {team[index] ? (
+                  <>
+                    <strong>{team[index].name}</strong>
+                    <span>{team[index].tier}</span>
+                  </>
+                ) : (
+                  <span>Empty</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="draft-side enemy">
+          <h2>Enemy Team</h2>
+
+          <div className="draft-slots">
+            {[0, 1, 2, 3, 4].map((index) => (
+              <div className="draft-slot" key={index}>
+                {enemy[index] ? (
+                  <>
+                    <strong>{enemy[index].name}</strong>
+                    <span>{enemy[index].tier}</span>
+                  </>
+                ) : (
+                  <span>Empty</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="draft-picker">
+        <div className="draft-search">
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search hero..."
+          />
+        </div>
+
+        <div className="draft-hero-grid">
+          {filtered.map((hero) => (
+            <div className="draft-hero" key={hero.name}>
+              <div
+                className="draft-avatar"
+                style={{
+                  background: `linear-gradient(135deg, ${hueFor(hero.name)}, #101827)`
+                }}
+              >
+                {initials(hero.name)}
+              </div>
+
+              <strong>{hero.name}</strong>
+
+              <div className="draft-buttons">
+                <button onClick={() => addHero(hero, "team")}>+</button>
+                <button onClick={() => addHero(hero, "enemy")}>−</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RankingsView({ heroes, lane, setLane, rank, setRank, onHero }) {
+  const lanes = ["All", "EXP", "Gold", "Jungle", "Mid", "Roam"];
+
+  const filtered = useMemo(() => {
+    return heroes
+      .filter((hero) => lane === "All" || hero.lanes.includes(lane))
+      .sort(sortTierHeroes);
+  }, [heroes, lane]);
+
+  return (
+    <div>
+      <PageHeading
+        title="Meta Rankings"
+        subtitle="Current KronAI tier rankings and ranked statistics."
+      />
+
+      <div className="filter-bar">
+        <div className="filter-group">
+          {lanes.map((item) => (
+            <button
+              key={item}
+              className={lane === item ? "active" : ""}
+              onClick={() => setLane(item)}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+
+        <select value={rank} onChange={(e) => setRank(e.target.value)}>
+          {[
+            "All Ranks",
+            "Legend",
+            "Mythic",
+            "Mythic Honor",
+            "Mythic Glory",
+            "Mythic Immortal"
+          ].map((item) => (
+            <option key={item}>{item}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="tier-explanation">
+        {Object.entries(tierDescriptions).map(([tier, description]) => (
+          <div key={tier}>
+            <span className={`tier-badge ${tierClass(tier)}`}>
+              {tier}
+            </span>
+            <p>{description}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="rankings-table">
+        <div className="ranking-header">
+          <span>Hero</span>
+          <span>Tier</span>
+          <span>Win Rate</span>
+          <span>Pick Rate</span>
+          <span>Ban Rate</span>
+        </div>
+
+        {filtered.map((hero) => {
+          const stats = getRankStats(hero, rank);
+
+          return (
+            <button
+              className="ranking-row"
+              key={hero.name}
+              onClick={() => onHero(hero)}
+            >
+              <span className="ranking-hero">
+                <span
+                  className="mini-avatar"
+                  style={{
+                    background: `linear-gradient(135deg, ${hueFor(hero.name)}, #101827)`
+                  }}
+                >
+                  {initials(hero.name)}
+                </span>
+
+                <strong>{hero.name}</strong>
+              </span>
+
+              <span>
+                <span className={`tier-badge ${tierClass(hero.tier)}`}>
+                  {hero.tier}
+                </span>
+              </span>
+
+              <span>{stats.winrate.toFixed(2)}%</span>
+              <span>{stats.pick.toFixed(2)}%</span>
+              <span>{stats.ban.toFixed(2)}%</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function HeroesView({ heroes, lane, setLane, onHero }) {
+  const [search, setSearch] = useState("");
+
+  const filtered = useMemo(() => {
+    return heroes.filter((hero) => {
+      const matchesLane =
+        lane === "All" || hero.lanes.includes(lane);
+
+      const matchesSearch =
+        hero.name.toLowerCase().includes(search.toLowerCase());
+
+      return matchesLane && matchesSearch;
     });
+  }, [heroes, lane, search]);
+
+  return (
+    <div>
+      <PageHeading
+        title="Heroes"
+        subtitle={`${filtered.length} heroes available`}
+      />
+
+      <div className="hero-controls">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search all heroes..."
+        />
+
+        <div className="lane-buttons">
+          {["All", "EXP", "Gold", "Jungle", "Mid", "Roam"].map((item) => (
+            <button
+              key={item}
+              className={lane === item ? "active" : ""}
+              onClick={() => setLane(item)}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="hero-grid">
+        {filtered.map((hero) => (
+          <HeroCard
+            key={hero.name}
+            hero={hero}
+            onClick={() => onHero(hero)}
+          />
+        ))}
+      </div>
+    </div>
+  );
 }
 
+function App() {
+  const [page, setPage] = useState("Coach AI");
+  const [lane, setLane] = useState("All");
+  const [rank, setRank] = useState("All Ranks");
+  const [selectedHero, setSelectedHero] = useState(null);
 
-function showHero(hero){
+  const heroes = roster.map((name) => getHero(name)).filter(Boolean);
 
-    const recommendation =
-        special[hero.name] ||
-        templates[hero.lane];
+  const openHero = (hero) => {
+    setSelectedHero(hero);
+    setPage("Heroes");
+  };
 
-    document.getElementById("resultTitle").innerText =
-        "⚡ " + hero.name;
+  return (
+    <div className="app-shell">
+      <header className="topbar">
+        <div className="brand" onClick={() => setPage("Coach AI")}>
+          <span className="brand-icon">⚡</span>
+          <div>
+            <strong>KronAI</strong>
+            <small>MLBB Strategy Assistant</small>
+          </div>
+        </div>
 
-    document.getElementById("build").innerHTML =
-        recommendation.build
-        .map(item => `<div class="item">• ${item}</div>`)
-        .join("");
+        <nav className="main-nav">
+          {[
+            "Coach AI",
+            "Rankings",
+            "Draft",
+            "Heroes",
+            "Builds",
+            "Counters"
+          ].map((item) => (
+            <button
+              key={item}
+              className={page === item ? "active" : ""}
+              onClick={() => setPage(item)}
+            >
+              {item}
+            </button>
+          ))}
+        </nav>
+      </header>
 
-    document.getElementById("emblem").innerHTML =
-        recommendation.emblem;
+      <main className="main-content">
+        {page === "Coach AI" && (
+          <CoachAI
+            selectedHero={selectedHero}
+            setSelectedHero={setSelectedHero}
+          />
+        )}
 
-    document.getElementById("spell").innerHTML =
-        recommendation.spell;
+        {page === "Rankings" && (
+          <RankingsView
+            heroes={heroes}
+            lane={lane}
+            setLane={setLane}
+            rank={rank}
+            setRank={setRank}
+            onHero={openHero}
+          />
+        )}
 
-    document.getElementById("playstyle").innerText =
-        recommendation.playstyle;
+        {page === "Draft" && <DraftView />}
 
-    document.getElementById("result")
-        .classList.add("show");
+        {page === "Heroes" && (
+          <div className="heroes-layout">
+            <HeroesView
+              heroes={heroes}
+              lane={lane}
+              setLane={setLane}
+              onHero={setSelectedHero}
+            />
 
-    document.getElementById("result")
-        .scrollIntoView({
-            behavior:"smooth",
-            block:"start"
-        });
+            <aside className="hero-sidebar">
+              <HeroProfile
+                hero={selectedHero}
+                rank={rank}
+              />
+            </aside>
+          </div>
+        )}
+
+        {page === "Builds" && (
+          <div>
+            <PageHeading
+              title="Build Database"
+              subtitle="Recommended items, emblems and battle spells."
+            />
+
+            <div className="hero-grid">
+              {heroes.map((hero) => (
+                <HeroCard
+                  key={hero.name}
+                  hero={hero}
+                  onClick={() => {
+                    setSelectedHero(hero);
+                    setPage("Heroes");
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {page === "Counters" && (
+          <div>
+            <PageHeading
+              title="Counter Database"
+              subtitle="Find heroes that can answer the enemy pick."
+            />
+
+            <div className="hero-grid">
+              {heroes.map((hero) => (
+                <HeroCard
+                  key={hero.name}
+                  hero={hero}
+                  onClick={() => {
+                    setSelectedHero(hero);
+                    setPage("Heroes");
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </main>
+
+      <footer className="footer">
+        <span>⚡ KronAI V0.4</span>
+        <span>MLBB Meta • Builds • Counters • Draft</span>
+      </footer>
+    </div>
+  );
 }
+
+ReactDOM
+  .createRoot(document.getElementById("root"))
+  .render(<App />);
+      <!DOCTYPE html>
+<html>
+<head>
+  <!-- Chunk 1: styles + setup -->
+</head>
+
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+  <!-- Chunk 2: hero roster -->
+  <!-- Chunk 3: data + helper functions -->
+  <!-- Chunk 4: UI + App -->
 
 </script>
 
