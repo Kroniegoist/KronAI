@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KronAI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #080b14;
+      color: white;
+      min-height: 100vh;
+    }
+
+    .header {
+      padding: 25px;
+      background: #101629;
+      border-bottom: 1px solid #242c45;
+    }
+
+    .logo {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    .subtitle {
+      color: #8d99b8;
+      margin-top: 5px;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .card {
+      background: #11182b;
+      border: 1px solid #27304b;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+
+    .card h2 {
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      color: #9da8c4;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 12px;
+      border: none;
+      border-radius: 12px;
+      background: #5b4cff;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #0c1222;
+      border-radius: 12px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <div class="logo">⚡ KronAI</div>
+    <div class="subtitle">Your MLBB Strategy Assistant</div>
+  </div>
+
+  <div class="container">
+
+    <div class="card">
+      <h2>🦸 Heroes</h2>
+      <p>Explore heroes and their roles.</p>
+      <button onclick="showMessage('Hero database coming soon!')">
+        Open Heroes
+      </button>
+    </div>
+
+    <div class="card">
+      <h2>⚔️ Builds</h2>
+      <p>Find recommended builds for your hero.</p>
+      <button onclick="showMessage('Build system coming soon!')">
+        Find Build
+      </button>
+    </div>
+
+    <div class="card">
+      <h2>🛡️ Counters</h2>
+      <p>Find heroes that counter your opponent.</p>
+      <button onclick="showMessage('Counter system coming soon!')">
+        Find Counter
+      </button>
+    </div>
+
+    <div class="card">
+      <h2>🧠 Draft Assistant</h2>
+      <p>Get recommendations during the draft.</p>
+      <button onclick="showMessage('Draft Assistant coming soon!')">
+        Start Draft
+      </button>
+    </div>
+
+    <div id="result"></div>
+
+  </div>
+
+  <script>
+    function showMessage(message) {
+      const result = document.getElementById("result");
+
+      result.style.display = "block";
+      result.textContent = "KronAI: " + message;
+    }
+  </script>
+
+</body>
+</html>
