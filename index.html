@@ -1,1440 +1,2197 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
-
-  <meta
-    name="theme-color"
-    content="#08060f"
-  >
-
-  <title>KronAI • MLBB AI Coach</title>
-
-  <script
-    crossorigin
-    src="https://unpkg.com/react@18/umd/react.development.js">
-  </script>
-
-  <script
-    crossorigin
-    src="https://unpkg.com/react-dom@18/umd/react-dom.development.js">
-  </script>
-
-  <script
-    src="https://unpkg.com/@babel/standalone/babel.min.js">
-  </script>
-
-  <style>
-
-    :root {
-      font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-      color: #eef0ff;
-      background: #08060f;
-
-      --bg: #08060f;
-      --panel: #100c1b;
-      --panel2: #151025;
-      --line: #29213b;
-      --text: #eef0ff;
-      --muted: #9790b1;
-      --accent: #9a7bff;
-      --accent2: #65b7ff;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background:
-        radial-gradient(
-          circle at 70% -10%,
-          #25124d 0%,
-          transparent 35%
-        ),
-        radial-gradient(
-          circle at -10% 35%,
-          #101a44 0%,
-          transparent 24%
-        ),
-        var(--bg);
-
-      color: var(--text);
-    }
-
-    button,
-    input,
-    select {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .app-shell {
-      min-height: 100vh;
-    }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-
-      display: flex;
-      align-items: center;
-      gap: 18px;
-
-      padding: 14px 20px;
-
-      background: rgba(8, 6, 15, 0.88);
-      backdrop-filter: blur(18px);
-
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .brand-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-
-      min-width: 175px;
-    }
-
-    .brand-mark {
-      width: 36px;
-      height: 36px;
-
-      display: grid;
-      place-items: center;
-
-      border-radius: 11px;
-
-      background:
-        linear-gradient(
-          135deg,
-          #7c5cff,
-          #39a9ff
-        );
-
-      box-shadow:
-        0 10px 35px rgba(116,80,255,0.25);
-    }
-
-    .brand-name {
-      font-weight: 900;
-      font-size: 19px;
-    }
-
-    .brand-sub {
-      font-size: 9px;
-      color: #8d85a8;
-      letter-spacing: 2px;
-      font-weight: 800;
-    }
-
-    .top-search {
-      flex: 1;
-      max-width: 640px;
-
-      margin: auto;
-
-      display: flex;
-      align-items: center;
-      gap: 9px;
-
-      background: #0f0b18;
-
-      border: 1px solid var(--line);
-      border-radius: 13px;
-
-      padding: 10px 13px;
-
-      color: #7e7696;
-    }
-
-    .top-search input {
-      background: transparent;
-      border: 0;
-      outline: 0;
-
-      color: var(--text);
-
-      width: 100%;
-    }
-
-    .patch-chip {
-      font-size: 12px;
-
-      color: #c0b9d0;
-      background: #120e1f;
-
-      border: 1px solid #2c2441;
-
-      padding: 8px 11px;
-      border-radius: 999px;
-
-      white-space: nowrap;
-    }
-
-    .main-nav {
-      display: flex;
-      gap: 8px;
-
-      overflow-x: auto;
-
-      padding: 12px 20px;
-
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-
-      background: rgba(10,7,17,0.78);
-    }
-
-    .nav-btn {
-      border: 1px solid transparent;
-
-      background: transparent;
-
-      color: #9e97b4;
-
-      padding: 9px 12px;
-      border-radius: 11px;
-
-      display: flex;
-      align-items: center;
-      gap: 7px;
-
-      white-space: nowrap;
-    }
-
-    .nav-btn:hover {
-      background: #120e1f;
-      color: #dcd6f3;
-    }
-
-    .nav-btn.active {
-      background: #1a1230;
-      color: #fff;
-
-      border-color: #3a2b5b;
-
-      box-shadow:
-        inset 0 0 0 1px rgba(156,123,255,0.08);
-    }
-
-    .content {
-      max-width: 1400px;
-
-      margin: auto;
-
-      padding: 26px 20px 50px;
-    }
-
-    .page-heading {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-
-      margin-bottom: 18px;
-    }
-
-    .heading-icon {
-      width: 42px;
-      height: 42px;
-
-      display: grid;
-      place-items: center;
-
-      border-radius: 14px;
-
-      background:
-        linear-gradient(
-          135deg,
-          #1b1230,
-          #0d172f
-        );
-
-      border: 1px solid #33264e;
-
-      color: #bda6ff;
-    }
-
-    .page-heading h1 {
-      margin: 0;
-      font-size: 28px;
-    }
-
-    .page-heading p {
-      margin: 3px 0 0;
-
-      color: var(--muted);
-
-      font-size: 13px;
-    }
-
-    .control-row {
-      display: flex;
-      gap: 20px;
-
-      flex-wrap: wrap;
-
-      margin: 18px 0;
-    }
-
-    .control-group {
-      flex: 1;
-      min-width: 300px;
-    }
-
-    .control-label {
-      display: block;
-
-      color: #887f9e;
-
-      font-size: 11px;
-
-      text-transform: uppercase;
-
-      letter-spacing: 1.4px;
-
-      font-weight: 800;
-
-      margin-bottom: 7px;
-    }
-
-    .segmented {
-      display: flex;
-
-      gap: 6px;
-
-      flex-wrap: wrap;
-    }
-
-    .seg {
-      background: #0e0a17;
-
-      border: 1px solid #28203a;
-
-      color: #a39bb8;
-
-      border-radius: 10px;
-
-      padding: 9px 12px;
-    }
-
-    .seg.active {
-      background:
-        linear-gradient(
-          135deg,
-          #6f4bdf,
-          #2779be
-        );
-
-      color: #fff;
-
-      border-color: #8064de;
-
-      box-shadow:
-        0 5px 20px rgba(107,74,220,0.2);
-    }
-
-    .rank-note {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-
-      background: #0c0a13;
-
-      border: 1px dashed #302842;
-
-      color: #8e87a2;
-
-      padding: 11px 13px;
-
-      border-radius: 12px;
-
-      font-size: 12px;
-
-      line-height: 1.45;
-
-      margin-bottom: 22px;
-    }
-
-    .tier-section {
-      margin-top: 30px;
-    }
-
-    .tier-heading {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      margin-bottom: 12px;
-    }
-
-    .tier-heading h2 {
-      margin: 0;
-      font-size: 17px;
-    }
-
-    .tier-heading p {
-      margin: 2px 0 0;
-
-      color: #7e7695;
-
-      font-size: 12px;
-    }
-
-    .tier-count {
-      margin-left: auto;
-
-      min-width: 30px;
-      height: 28px;
-
-      display: grid;
-      place-items: center;
-
-      border-radius: 9px;
-
-      background: #120e1f;
-
-      color: #9b91ae;
-
-      border: 1px solid #2a223a;
-
-      font-size: 12px;
-    }
-
-    .tier-pill,
-    .mini-tier {
-      display: inline-grid;
-      place-items: center;
-
-      font-weight: 900;
-
-      border-radius: 9px;
-
-      border: 1px solid transparent;
-    }
-
-    .tier-pill {
-      min-width: 43px;
-      height: 36px;
-    }
-
-    .mini-tier {
-      font-size: 11px;
-
-      min-width: 27px;
-      height: 23px;
-
-      padding: 0 6px;
-    }
-
-    .tier-splus {
-      background: #7a4eea22;
-      border-color: #7a4eea88;
-      color: #c8b3ff;
-    }
-
-    .tier-s {
-      background: #376cf222;
-      border-color: #376cf288;
-      color: #a7c3ff;
-    }
-
-    .tier-a {
-      background: #1aa36d22;
-      border-color: #1aa36d88;
-      color: #83e7bb;
-    }
-
-    .tier-b {
-      background: #d9a53122;
-      border-color: #d9a53188;
-      color: #ffd887;
-    }
-
-    .tier-c {
-      background: #c06b3222;
-      border-color: #c06b3288;
-      color: #ffb484;
-    }
-
-    .tier-f {
-      background: #d84e5c22;
-      border-color: #d84e5c88;
-      color: #ff9aa5;
-    }
-
-    .hero-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(
-          auto-fill,
-          minmax(240px,1fr)
-        );
-
-      gap: 12px;
-    }
-
-    .hero-card {
-      display: flex;
-
-      gap: 11px;
-
-      text-align: left;
-
-      background:
-        linear-gradient(
-          180deg,
-          #120e1e,
-          #0d0a15
-        );
-
-      border: 1px solid #2b233c;
-
-      border-radius: 15px;
-
-      padding: 9px;
-
-      color: var(--text);
-
-      min-height: 102px;
-
-      transition: 0.2s;
-
-      box-shadow:
-        0 8px 28px rgba(0,0,0,0.1);
-    }
-
-    .hero-card:hover {
-      transform: translateY(-2px);
-
-      border-color: #4a3a68;
-
-      box-shadow:
-        0 15px 40px rgba(0,0,0,0.23);
-    }
-
-    .hero-portrait {
-      position: relative;
-
-      overflow: hidden;
-
-      flex: 0 0 74px;
-
-      height: 84px;
-
-      border-radius: 12px;
-
-      background:
-        radial-gradient(
-          circle at 30% 25%,
-          hsl(
-            var(--hue)
-            90%
-            75%
-            /
-            .26
-          ),
-          transparent 32%
-        ),
-        linear-gradient(
-          135deg,
-          hsl(
-            var(--hue)
-            72%
-            19%
-          ),
-          #0c0a15 75%
-        );
-
-      border: 1px solid rgba(255,255,255,0.08);
-
-      display: grid;
-
-      place-items: center;
-    }
-
-    .hero-portrait-big {
-      width: 112px;
-      height: 132px;
-      flex-basis: 112px;
-    }
-
-    .portrait-glow {
-      position: absolute;
-
-      inset: auto 0 0 0;
-
-      height: 48%;
-
-      background:
-        linear-gradient(
-          0deg,
-          hsl(
-            var(--hue)
-            80%
-            55%
-            /
-            .22
-          ),
-          transparent
-        );
-    }
-
-    .portrait-initials {
-      font-weight: 950;
-
-      font-size: 28px;
-
-      letter-spacing: -1px;
-
-      position: relative;
-
-      text-shadow:
-        0 4px 22px rgba(0,0,0,0.5);
-    }
-
-    .portrait-initials.large {
-      font-size: 38px;
-    }
-
-    .role-dot {
-      position: absolute;
-
-      right: 5px;
-      top: 5px;
-
-      padding: 3px 5px;
-
-      border-radius: 999px;
-
-      background: rgba(0,0,0,0.35);
-
-      font-size: 9px;
-
-      font-weight: 900;
-    }
-
-    .hero-card-body {
-      min-width: 0;
-
-      flex: 1;
-
-      padding-top: 1px;
-    }
-
-    .hero-title-row {
-      display: flex;
-
-      align-items: center;
-
-      gap: 7px;
-    }
-
-    .hero-title-row strong {
-      font-size: 14px;
-
-      white-space: nowrap;
-
-      overflow: hidden;
-
-      text-overflow: ellipsis;
-    }
-
-    .hero-role {
-      color: #8e86a2;
-
-      font-size: 10px;
-
-      margin-top: 3px;
-
-      min-height: 31px;
-    }
-
-    .stats-row {
-      display: flex;
-
-      gap: 9px;
-
-      margin-top: 5px;
-
-      color: #777089;
-
-      font-size: 10px;
-    }
-
-    .stats-row b {
-      color: #ddd7ef;
-
-      font-weight: 800;
-    }
-
-    .empty-card {
-      padding: 20px;
-
-      border: 1px dashed #302943;
-
-      border-radius: 12px;
-
-      color: #827b94;
-
-      background: #0d0a14;
-    }
-
-    .hero-profile {
-      background:
-        linear-gradient(
-          180deg,
-          #110d1c,
-          #0b0811
-        );
-
-      border: 1px solid #2d243e;
-
-      border-radius: 18px;
-
-      padding: 18px;
-    }
-
-    .back-btn {
-      display: inline-flex;
-
-      align-items: center;
-
-      gap: 6px;
-
-      background: transparent;
-
-      border: 0;
-
-      color: #9d94b1;
-
-      padding: 7px 3px;
-
-      margin-bottom: 10px;
-    }
-
-    .profile-head {
-      display: flex;
-
-      gap: 16px;
-
-      align-items: center;
-    }
-
-    .profile-main {
-      flex: 1;
-    }
-
-    .profile-name-row {
-      display: flex;
-
-      align-items: center;
-
-      gap: 10px;
-    }
-
-    .profile-name-row h2 {
-      font-size: 28px;
-
-      margin: 0;
-    }
-
-    .profile-role {
-      color: #8f87a3;
-
-      margin: 4px 0 12px;
-    }
-
-    .profile-stats {
-      display: flex;
-
-      gap: 22px;
-    }
-
-    .profile-stats div {
-      display: flex;
-
-      flex-direction: column;
-    }
-
-    .profile-stats b {
-      font-size: 17px;
-    }
-
-    .profile-stats span {
-      font-size: 10px;
-
-      text-transform: uppercase;
-
-      letter-spacing: 1px;
-
-      color: #726b82;
-
-      margin-top: 1px;
-    }
-
-    .profile-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(2,minmax(0,1fr));
-
-      gap: 12px;
-
-      margin-top: 18px;
-    }
-
-    .info-panel {
-      background: #0f0b18;
-
-      border: 1px solid #29213a;
-
-      border-radius: 14px;
-
-      padding: 14px;
-    }
-
-    .info-panel h3 {
-      margin: 0 0 10px;
-
-      font-size: 14px;
-    }
-
-    .skill-list {
-      display: grid;
-
-      gap: 8px;
-    }
-
-    .skill-row {
-      display: flex;
-
-      gap: 9px;
-
-      padding: 9px;
-
-      border-radius: 10px;
-
-      background: #120e1c;
-    }
-
-    .skill-key {
-      width: 24px;
-      height: 24px;
-
-      display: grid;
-
-      place-items: center;
-
-      flex-shrink: 0;
-
-      border-radius: 7px;
-
-      background: #211733;
-
-      color: #c6b5ff;
-
-      font-size: 11px;
-
-      font-weight: 900;
-    }
-
-    .skill-row b {
-      font-size: 12px;
-    }
-
-    .skill-row p {
-      margin: 3px 0 0;
-
-      color: #817993;
-
-      font-size: 11px;
-
-      line-height: 1.4;
-    }
-
-    .items {
-      display: flex;
-
-      flex-wrap: wrap;
-
-      gap: 7px;
-    }
-
-    .item-chip,
-    .counter-chip {
-      padding: 8px 9px;
-
-      border-radius: 9px;
-
-      background: #151023;
-
-      border: 1px solid #2d2641;
-
-      color: #d8d1e8;
-
-      font-size: 11px;
-    }
-
-    .item-chip span {
-      color: #8b82a0;
-
-      margin-right: 5px;
-    }
-
-    .build-meta {
-      color: #938ba6;
-
-      font-size: 11px;
-
-      line-height: 1.6;
-
-      margin-top: 12px;
-    }
-
-    .build-meta b {
-      color: #ddd7eb;
-    }
-
-    .why {
-      margin-top: 10px;
-
-      padding: 10px;
-
-      border-radius: 10px;
-
-      background: #171022;
-
-      color: #a39ab8;
-
-      font-size: 11px;
-
-      line-height: 1.5;
-    }
-
-    .counter-grid {
-      display: flex;
-
-      flex-wrap: wrap;
-
-      gap: 7px;
-    }
-
-    .list-stack {
-      display: grid;
-
-      gap: 8px;
-    }
-
-    .list-row {
-      width: 100%;
-
-      display: grid;
-
-      grid-template-columns:
-        54px
-        150px
-        1fr
-        25px;
-
-      gap: 10px;
-
-      align-items: center;
-
-      background: #0f0b18;
-
-      border: 1px solid #29213a;
-
-      border-radius: 12px;
-
-      color: #ddd6ec;
-
-      padding: 11px 12px;
-
-      text-align: left;
-    }
-
-    .list-row:hover {
-      border-color: #463760;
-    }
-
-    .list-row span {
-      font-size: 11px;
-
-      color: #847b97;
-
-      overflow: hidden;
-
-      text-overflow: ellipsis;
-
-      white-space: nowrap;
-    }
-
-    .hero-name-inline {
-      font-weight: 900;
-
-      color: #efeaff !important;
-    }
-
-    .coach-grid {
-      display: grid;
-
-      grid-template-columns:
-        380px
-        1fr;
-
-      gap: 14px;
-    }
-
-    .coach-panel,
-    .coach-result {
-      background: #0f0b18;
-
-      border: 1px solid #2c233e;
-
-      border-radius: 18px;
-
-      padding: 17px;
-    }
-
-    .panel-kicker {
-      font-size: 10px;
-
-      letter-spacing: 1.5px;
-
-      color: #776d8c;
-
-      font-weight: 900;
-    }
-
-    .coach-panel h2 {
-      font-size: 17px;
-
-      margin: 5px 0 10px;
-    }
-
-    .mt {
-      margin-top: 20px;
-    }
-
-    .input-box {
-      display: flex;
-
-      align-items: center;
-
-      gap: 7px;
-
-      border: 1px solid #2a213b;
-
-      background: #0b0812;
-
-      border-radius: 11px;
-
-      padding: 10px 12px;
-
-      color: #7e7591;
-    }
-
-    .input-box input {
-      background: transparent;
-
-      border: 0;
-
-      outline: 0;
-
-      color: var(--text);
-
-      width: 100%;
-    }
-
-    .coach-title {
-      display: flex;
-
-      align-items: center;
-
-      gap: 10px;
-    }
-
-    .ai-orb {
-      width: 38px;
-      height: 38px;
-
-      border-radius: 13px;
-
-      display: grid;
-
-      place-items: center;
-
-      background:
-        linear-gradient(
-          135deg,
-          #744cf3,
-          #318bd0
-        );
-
-      box-shadow:
-        0 10px 30px rgba(105,69,235,0.25);
-    }
-
-    .coach-title b {
-      display: block;
-    }
-
-    .coach-title span {
-      display: block;
-
-      color: #777089;
-
-      font-size: 11px;
-
-      margin-top: 2px;
-    }
-
-    .recommend-hero {
-      display: flex;
-
-      gap: 14px;
-
-      align-items: center;
-
-      margin: 22px 0;
-    }
-
-    .recommend-hero small {
-      font-size: 9px;
-
-      letter-spacing: 1.3px;
-
-      color: #756b89;
-
-      font-weight: 900;
-    }
-
-    .recommend-hero h2 {
-      margin: 4px 0 2px;
-
-      font-size: 25px;
-    }
-
-    .recommend-hero p {
-      margin: 0 0 8px;
-
-      color: #8e86a1;
-
-      font-size: 12px;
-    }
-
-    .coach-box {
-      background: #120d1c;
-
-      border: 1px solid #2b233d;
-
-      border-radius: 13px;
-
-      padding: 12px;
-
-      margin-top: 10px;
-    }
-
-    .coach-box b {
-      font-size: 12px;
-    }
-
-    .coach-box p {
-      margin: 5px 0 10px;
-
-      color: #8d84a2;
-
-      font-size: 11px;
-
-      line-height: 1.45;
-    }
-
-    .primary-btn {
-      border: 1px solid #6d56c6;
-
-      background:
-        linear-gradient(
-          135deg,
-          #6041c5,
-          #2879b6
-        );
-
-      color: #fff;
-
-      border-radius: 9px;
-
-      padding: 8px 11px;
-
-      font-weight: 800;
-
-      font-size: 11px;
-    }
-
-    .draft-side {
-      display: flex;
-
-      gap: 8px;
-
-      margin-bottom: 12px;
-    }
-
-    .draft-side button {
-      border: 1px solid #2a213a;
-
-      background: #0f0b18;
-
-      color: #9188a4;
-
-      border-radius: 10px;
-
-      padding: 9px 12px;
-    }
-
-    .draft-side button.active {
-      background: #1c1430;
-
-      color: #fff;
-
-      border-color: #4a3772;
-    }
-
-    .draft-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(5,1fr);
-
-      gap: 10px;
-    }
-
-    .draft-slot {
-      background: #0f0b18;
-
-      border: 1px solid #2a213a;
-
-      border-radius: 12px;
-
-      padding: 12px;
-    }
-
-    .slot-lane {
-      font-size: 10px;
-
-      text-transform: uppercase;
-
-      letter-spacing: 1px;
-
-      color: #706780;
-
-      margin-bottom: 7px;
-    }
-
-    .draft-slot button {
-      width: 100%;
-
-      background: #141021;
-
-      border: 1px dashed #352a4b;
-
-      border-radius: 9px;
-
-      padding: 13px 8px;
-
-      color: #dcd5eb;
-    }
-
-    .draft-analysis {
-      display: flex;
-
-      gap: 10px;
-
-      margin: 14px 0;
-
-      padding: 13px;
-
-      border-radius: 13px;
-
-      background: #100d19;
-
-      border: 1px solid #2b233b;
-
-      color: #a49ab5;
-    }
-
-    .draft-analysis p {
-      margin: 3px 0 0;
-
-      font-size: 11px;
-
-      color: #7c738f;
-    }
-
-    .footer {
-      display: flex;
-
-      justify-content: center;
-
-      gap: 24px;
-
-      flex-wrap: wrap;
-
-      color: #665f79;
-
-      font-size: 10px;
-
-      padding: 28px 20px;
-
-      border-top:
-        1px solid rgba(255,255,255,0.05);
-    }
-
-    .modal-backdrop {
-      position: fixed;
-
-      inset: 0;
-
-      z-index: 50;
-
-      background:
-        rgba(3,2,7,0.78);
-
-      backdrop-filter: blur(8px);
-
-      display: grid;
-
-      place-items: center;
-
-      padding: 20px;
-    }
-
-    .modal {
-      width: min(1000px,96vw);
-
-      max-height: 92vh;
-
-      overflow: auto;
-
-      position: relative;
-    }
-
-    .modal-close {
-      position: absolute;
-
-      right: 10px;
-      top: 10px;
-
-      width: 35px;
-      height: 35px;
-
-      border-radius: 10px;
-
-      border: 1px solid #3b2e55;
-
-      background: #110d1b;
-
-      color: #d8d1e8;
-
-      z-index: 3;
-    }
-
-    @media (max-width: 900px) {
-
-      .topbar {
-        flex-wrap: wrap;
-      }
-
-      .top-search {
-        order: 3;
-
-        max-width: none;
-
-        flex-basis: 100%;
-      }
-
-      .patch-chip {
-        font-size: 10px;
-      }
-
-      .coach-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .profile-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .draft-grid {
-        grid-template-columns:
-          repeat(2,1fr);
-      }
-
-      .list-row {
-        grid-template-columns:
-          54px
-          120px
-          1fr
-          20px;
-      }
-    }
-
-    @media (max-width: 620px) {
-
-      .content {
-        padding: 18px 12px 35px;
-      }
-
-      .main-nav {
-        padding: 10px 12px;
-      }
-
-      .topbar {
-        padding: 11px 12px;
-      }
-
-      .brand-wrap {
-        min-width: auto;
-      }
-
-      .patch-chip {
-        display: none;
-      }
-
-      .hero-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .profile-head {
-        align-items: flex-start;
-      }
-
-      .profile-name-row h2 {
-        font-size: 22px;
-      }
-
-      .draft-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .list-row {
-        grid-template
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08060f">
+<title>👑 KronAI • MLBB AI Coach</title>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<style>
+:root{
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:#eef0ff;
+  background:#08060f;
+  font-synthesis:none;
+  text-rendering:optimizeLegibility;
+  --bg:#08060f;
+  --panel:#100c1b;
+  --panel2:#151025;
+  --line:#29213b;
+  --text:#eef0ff;
+  --muted:#9790b1;
+  --accent:#9a7bff;
+  --accent2:#65b7ff;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 70% -10%,#25124d 0%,transparent 35%),
+    radial-gradient(circle at -10% 35%,#101a44 0%,transparent 24%),
+    var(--bg);
+  color:var(--text);
+}
+
+button,input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.app-shell{
+  min-height:100vh;
+}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  padding:14px 20px;
+  background:rgba(8,6,15,.88);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.brand-wrap{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:175px;
+}
+
+.brand-mark{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:linear-gradient(135deg,#7c5cff,#39a9ff);
+  box-shadow:0 10px 35px rgba(116,80,255,.25);
+}
+
+.brand-name{
+  font-weight:900;
+  font-size:19px;
+  letter-spacing:.2px;
+}
+
+.brand-sub{
+  font-size:9px;
+  color:#8d85a8;
+  letter-spacing:2px;
+  font-weight:800;
+}
+
+.top-search{
+  flex:1;
+  max-width:640px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  background:#0f0b18;
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:10px 13px;
+  color:#7e7696;
+}
+
+.top-search input,
+.input-box input{
+  background:transparent;
+  border:0;
+  outline:0;
+  color:var(--text);
+  width:100%;
+}
+
+.patch-chip{
+  font-size:12px;
+  color:#c0b9d0;
+  background:#120e1f;
+  border:1px solid #2c2441;
+  padding:8px 11px;
+  border-radius:999px;
+  white-space:nowrap;
+}
+
+.main-nav{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  padding:12px 20px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  background:rgba(10,7,17,.78);
+}
+
+.nav-btn{
+  border:1px solid transparent;
+  background:transparent;
+  color:#9e97b4;
+  padding:9px 12px;
+  border-radius:11px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  white-space:nowrap;
+}
+
+.nav-btn:hover{
+  background:#120e1f;
+  color:#dcd6f3;
+}
+
+.nav-btn.active{
+  background:#1a1230;
+  color:#fff;
+  border-color:#3a2b5b;
+}
+
+.content{
+  max-width:1400px;
+  margin:auto;
+  padding:26px 20px 50px;
+}
+
+.page-heading{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  margin-bottom:18px;
+}
+
+.heading-icon{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#1b1230,#0d172f);
+  border:1px solid #33264e;
+  display:grid;
+  place-items:center;
+  color:#bda6ff;
+}
+
+.page-heading h1{
+  margin:0;
+  font-size:28px;
+}
+
+.page-heading p{
+  margin:3px 0 0;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.control-row{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+  margin:18px 0;
+}
+
+.control-group{
+  flex:1;
+  min-width:300px;
+}
+
+.control-label{
+  display:block;
+  color:#887f9e;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1.4px;
+  font-weight:800;
+  margin-bottom:7px;
+}
+
+.segmented{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+
+.seg{
+  background:#0e0a17;
+  border:1px solid #28203a;
+  color:#a39bb3;
+  border-radius:10px;
+  padding:9px 12px;
+}
+
+.seg.active{
+  background:linear-gradient(135deg,#6f4bdf,#2779be);
+  color:#fff;
+  border-color:#8064de;
+  box-shadow:0 5px 20px rgba(107,74,220,.2);
+}
+
+.rank-note{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  background:#0c0a13;
+  border:1px dashed #302842;
+  color:#8e87a2;
+  padding:11px 13px;
+  border-radius:12px;
+  font-size:12px;
+  line-height:1.45;
+  margin-bottom:22px;
+}
+
+.tier-section{
+  margin-top:30px;
+}
+
+.tier-heading{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.tier-heading h2{
+  margin:0;
+  font-size:17px;
+}
+
+.tier-heading p{
+  margin:2px 0 0;
+  color:#7e7695;
+  font-size:12px;
+}
+
+.tier-count{
+  margin-left:auto;
+  min-width:30px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:#120e1f;
+  color:#9b91ae;
+  border:1px solid #2a223a;
+  font-size:12px;
+}
+
+.tier-pill,
+.mini-tier{
+  display:inline-grid;
+  place-items:center;
+  font-weight:900;
+  border-radius:9px;
+  border:1px solid transparent;
+}
+
+.tier-pill{
+  min-width:43px;
+  height:36px;
+}
+
+.mini-tier{
+  font-size:11px;
+  min-width:27px;
+  height:23px;
+  padding:0 6px;
+}
+
+.tier-splus{
+  background:#7a4eea22;
+  border-color:#7a4eea88;
+  color:#c8b3ff;
+}
+
+.tier-s{
+  background:#376cf222;
+  border-color:#376cf288;
+  color:#a7c3ff;
+}
+
+.tier-a{
+  background:#1aa36d22;
+  border-color:#1aa36d88;
+  color:#83e7bb;
+}
+
+.tier-b{
+  background:#d9531222;
+  border-color:#d9531288;
+  color:#ffd887;
+}
+
+.tier-c{
+  background:#c06b3222;
+  border-color:#c06b3288;
+  color:#ffb484;
+}
+
+.tier-f{
+  background:#d84e5c22;
+  border-color:#d84e5c88;
+  color:#ff9aa5;
+}
+
+.hero-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:12px;
+}
+
+.hero-grid.small-grid{
+  margin-top:18px;
+}
+
+.hero-card{
+  display:flex;
+  gap:11px;
+  text-align:left;
+  background:linear-gradient(180deg,#120e1e,#0d0a15);
+  border:1px solid #2b233c;
+  border-radius:15px;
+  padding:9px;
+  color:var(--text);
+  min-height:102px;
+  transition:.2s;
+  box-shadow:0 8px 28px rgba(0,0,0,.1);
+}
+
+.hero-card:hover{
+  transform:translateY(-2px);
+  border-color:#4a3a68;
+  box-shadow:0 15px 40px rgba(0,0,0,.23);
+}
+
+.hero-portrait{
+  position:relative;
+  overflow:hidden;
+  flex:0 0 74px;
+  height:84px;
+  border-radius:12px;
+  background:
+    radial-gradient(circle at 30% 25%,hsl(var(--hue) 90% 75% / .26),transparent 32%),
+    linear-gradient(135deg,hsl(var(--hue) 72% 19%),#0c0a15 75%);
+  border:1px solid rgba(255,255,255,.08);
+  display:grid;
+  place-items:center;
+}
+
+.hero-portrait-big{
+  width:112px;
+  height:132px;
+  flex-basis:112px;
+}
+
+.portrait-glow{
+  position:absolute;
+  inset:auto 0 0 0;
+  height:48%;
+  background:linear-gradient(0deg,hsl(var(--hue) 80% 55% / .22),transparent);
+}
+
+.portrait-initials{
+  font-weight:950;
+  font-size:28px;
+  letter-spacing:-1px;
+  position:relative;
+  text-shadow:0 4px 22px rgba(0,0,0,.5);
+}
+
+.portrait-initials.large{
+  font-size:38px;
+}
+
+.role-dot{
+  position:absolute;
+  right:5px;
+  top:5px;
+  padding:3px 5px;
+  border-radius:999px;
+  background:rgba(0,0,0,.35);
+  font-size:9px;
+  font-weight:900;
+}
+
+.hero-card-body{
+  min-width:0;
+  flex:1;
+  padding-top:1px;
+}
+
+.hero-title-row{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.hero-title-row strong{
+  font-size:14px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.hero-role{
+  color:#8e86a2;
+  font-size:10px;
+  margin-top:3px;
+  min-height:31px;
+}
+
+.stats-row{
+  display:flex;
+  gap:9px;
+  margin-top:5px;
+  color:#777089;
+  font-size:10px;
+}
+
+.stats-row b{
+  color:#ddd7ef;
+  font-weight:800;
+}
+
+.empty-card{
+  padding:20px;
+  border:1px dashed #302943;
+  border-radius:12px;
+  color:#827b94;
+  background:#0d0a14;
+}
+
+.hero-profile{
+  background:linear-gradient(180deg,#110d1c,#0b0811);
+  border:1px solid #2d243e;
+  border-radius:18px;
+  padding:18px;
+}
+
+.back-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:transparent;
+  border:0;
+  color:#9d94b1;
+  padding:7px 3px;
+  margin-bottom:10px;
+}
+
+.profile-head{
+  display:flex;
+  gap:16px;
+  align-items:center;
+}
+
+.profile-main{
+  flex:1;
+}
+
+.profile-name-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.profile-name-row h2{
+  font-size:28px;
+  margin:0;
+}
+
+.profile-role{
+  color:#8f87a3;
+  margin:4px 0 12px;
+}
+
+.profile-stats{
+  display:flex;
+  gap:22px;
+}
+
+.profile-stats div{
+  display:flex;
+  flex-direction:column;
+}
+
+.profile-stats b{
+  font-size:17px;
+}
+
+.profile-stats span{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:#726b82;
+  margin-top:1px;
+}
+
+.profile-tabs{
+  display:flex;
+  gap:18px;
+  margin:20px 0 15px;
+  padding-bottom:8px;
+  border-bottom:1px solid #242036;
+  color:#706980;
+  font-size:12px;
+}
+
+.profile-tabs .selected{
+  color:#e9e3ff;
+  font-weight:900;
+}
+
+.profile-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+.info-panel{
+  background:#0f0b18;
+  border:1px solid #29213a;
+  border-radius:14px;
+  padding:14px;
+}
+
+.info-panel h3{
+  margin:0 0 10px;
+  font-size:14px;
+}
+
+.skill-list{
+  display:grid;
+  gap:8px;
+}
+
+.skill-row{
+  display:flex;
+  gap:9px;
+  padding:9px;
+  border-radius:10px;
+  background:#120e1c;
+}
+
+.skill-key{
+  width:24px;
+  height:24px;
+  display:grid;
+  place-items:center;
+  border-radius:7px;
+  background:#211733;
+  color:#c6b5ff;
+  font-size:11px;
+  font-weight:900;
+}
+
+.skill-row b{
+  font-size:12px;
+}
+
+.skill-row p{
+  margin:3px 0 0;
+  color:#817993;
+  font-size:11px;
+  line-height:1.4;
+}
+
+.items{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+
+.item-chip,
+.counter-chip{
+  padding:8px 9px;
+  border-radius:9px;
+  background:#151023;
+  border:1px solid #2d2641;
+  color:#d8d1e8;
+  font-size:11px;
+}
+
+.item-chip span{
+  color:#8b82a0;
+  margin-right:5px;
+}
+
+.build-meta{
+  color:#938ba6;
+  font-size:11px;
+  line-height:1.6;
+  margin-top:12px;
+}
+
+.build-meta b{
+  color:#ddd7eb;
+}
+
+.why{
+  margin-top:10px;
+  padding:10px;
+  border-radius:10px;
+  background:#171022;
+  color:#a39ab8;
+  font-size:11px;
+  line-height:1.5;
+}
+
+.counter-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+
+.list-stack{
+  display:grid;
+  gap:8px;
+}
+
+.list-row{
+  width:100%;
+  display:grid;
+  grid-template-columns:54px 150px 1fr 25px;
+  gap:10px;
+  align-items:center;
+  background:#0f0b18;
+  border:1px solid #29213a;
+  border-radius:12px;
+  color:#ddd6ec;
+  padding:11px 12px;
+  text-align:left;
+}
+
+.list-row:hover{
+  border-color:#463760;
+}
+
+.list-row span{
+  font-size:11px;
+  color:#847b97;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.hero-name-inline{
+  font-weight:900;
+  color:#efeaff!important;
+}
+
+.counter-row{
+  grid-template-columns:150px 1fr 1fr 25px;
+}
+
+.coach-grid{
+  display:grid;
+  grid-template-columns:380px 1fr;
+  gap:14px;
+}
+
+.coach-panel,
+.coach-result{
+  background:#0f0b18;
+  border:1px solid #2c233e;
+  border-radius:18px;
+  padding:17px;
+}
+
+.panel-kicker{
+  font-size:10px;
+  letter-spacing:1.5px;
+  color:#776d8c;
+  font-weight:900;
+}
+
+.coach-panel h2{
+  font-size:17px;
+  margin:5px 0 10px;
+}
+
+.mt{
+  margin-top:20px;
+}
+
+.input-box{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  border:1px solid #2a213b;
+  background:#0b0812;
+  border-radius:11px;
+  padding:10px 12px;
+  color:#7e7591;
+}
+
+.coach-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.ai-orb{
+  width:38px;
+  height:38px;
+  border-radius:13px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#744cf3,#318bd0);
+}
+
+.coach-title b{
+  display:block;
+}
+
+.coach-title span{
+  display:block;
+  color:#777089;
+  font-size:11px;
+  margin-top:2px;
+}
+
+.recommend-hero{
+  display:flex;
+  gap:14px;
+  align-items:center;
+  margin:22px 0;
+}
+
+.recommend-hero small{
+  font-size:9px;
+  letter-spacing:1.3px;
+  color:#756b89;
+  font-weight:900;
+}
+
+.recommend-hero h2{
+  margin:4px 0 2px;
+  font-size:25px;
+}
+
+.recommend-hero p{
+  margin:0 0 8px;
+  color:#8e86a1;
+  font-size:12px;
+}
+
+.coach-box{
+  background:#120d1c;
+  border:1px solid #2b233d;
+  border-radius:13px;
+  padding:12px;
+  margin-top:10px;
+}
+
+.coach-box b{
+  font-size:12px;
+}
+
+.coach-box p{
+  margin:5px 0 10px;
+  color:#8d84a2;
+  font-size:11px;
+  line-height:1.45;
+}
+
+.primary-btn{
+  border:1px solid #6d56c6;
+  background:linear-gradient(135deg,#6041c5,#2879b6);
+  color:#fff;
+  border-radius:9px;
+  padding:8px 11px;
+  font-weight:800;
+  font-size:11px;
+}
+
+.draft-side{
+  display:flex;
+  gap:8px;
+  margin-bottom:12px;
+}
+
+.draft-side button{
+  border:1px solid #2a213a;
+  background:#0f0b18;
+  color:#9188a4;
+  border-radius:10px;
+  padding:9px 12px;
+}
+
+.draft-side button.active{
+  background:#1c1430;
+  color:#fff;
+  border-color:#4a3772;
+}
+
+.draft-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+}
+
+.draft-slot{
+  background:#0f0b18;
+  border:1px solid #2a213a;
+  border-radius:12px;
+  padding:12px;
+}
+
+.slot-lane{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:#706780;
+  margin-bottom:7px;
+}
+
+.draft-slot button{
+  width:100%;
+  background:#141021;
+  border:1px dashed #352a4b;
+  border-radius:9px;
+  padding:13px 8px;
+  color:#dcd5eb;
+}
+
+.draft-analysis{
+  display:flex;
+  gap:10px;
+  margin:14px 0;
+  padding:13px;
+  border-radius:13px;
+  background:#100d19;
+  border:1px solid #2b233b;
+  color:#a49ab5;
+}
+
+.draft-analysis p{
+  margin:3px 0 0;
+  font-size:11px;
+  color:#7c738f;
+}
+
+.footer{
+  display:flex;
+  justify-content:center;
+  gap:24px;
+  flex-wrap:wrap;
+  color:#665f79;
+  font-size:10px;
+  padding:28px 20px;
+  border-top:1px solid rgba(255,255,255,.05);
+}
+
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:50;
+  background:rgba(3,2,7,.78);
+  backdrop-filter:blur(8px);
+  display:grid;
+  place-items:center;
+  padding:20px;
+}
+
+.modal{
+  width:min(1000px,96vw);
+  max-height:92vh;
+  overflow:auto;
+  position:relative;
+}
+
+.modal-close{
+  position:fixed;
+  margin-left:min(460px,45vw);
+  margin-top:2px;
+  width:35px;
+  height:35px;
+  border-radius:10px;
+  border:1px solid #3b2e55;
+  background:#110d1b;
+  color:#d8d1e8;
+  z-index:3;
+}
+
+@media(max-width:900px){
+  .topbar{
+    flex-wrap:wrap;
+  }
+
+  .top-search{
+    order:3;
+    max-width:none;
+    flex-basis:100%;
+  }
+
+  .patch-chip{
+    font-size:10px;
+  }
+
+  .coach-grid{
+    grid-template-columns:1fr;
+  }
+
+  .profile-grid{
+    grid-template-columns:1fr;
+  }
+
+  .draft-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .list-row{
+    grid-template-columns:54px 120px 1fr 20px;
+  }
+
+  .counter-row{
+    grid-template-columns:120px 1fr 1fr 20px;
+  }
+}
+
+@media(max-width:620px){
+  .content{
+    padding:18px 12px 35px;
+  }
+
+  .main-nav{
+    padding:10px 12px;
+  }
+
+  .topbar{
+    padding:11px 12px;
+  }
+
+  .brand-wrap{
+    min-width:auto;
+  }
+
+  .patch-chip{
+    display:none;
+  }
+
+  .hero-grid{
+    grid-template-columns:1fr;
+  }
+
+  .profile-head{
+    align-items:flex-start;
+  }
+
+  .profile-name-row h2{
+    font-size:22px;
+  }
+
+  .draft-grid{
+    grid-template-columns:1fr;
+  }
+
+  .list-row,
+  .counter-row{
+    grid-template-columns:48px 1fr 18px;
+  }
+
+  .list-row>span:nth-child(3){
+    display:none;
+  }
+
+  .counter-row .hero-name-inline{
+    grid-column:1/3;
+  }
+
+  .counter-row>span:nth-child(2){
+    grid-column:1/3;
+  }
+
+  .counter-row>span:nth-child(4){
+    grid-column:3;
+  }
+
+  .footer{
+    gap:10px;
+    flex-direction:column;
+    align-items:center;
+  }
+}
+</style>
+</head>
+
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+
+const roster = [
+['Aamon','Assassin','B',50.7],
+['Akai','Tank','B',50.2],
+['Aldous','Fighter','C',49.3],
+['Alice','Tank, Mage','B',50.4],
+['Alpha','Fighter','F',46.3],
+['Alucard','Fighter, Assassin','C',49.0],
+['Angela','Support','B',48.9],
+['Argus','Fighter','S',54.7],
+['Arlott','Fighter, Assassin','C',48.0],
+['Atlas','Tank','A',51.5],
+['Aulus','Fighter','B',50.4],
+['Aurora','Mage','C',48.8],
+['Badang','Fighter','B',50.4],
+['Balmond','Fighter','C',46.7],
+['Bane','Fighter, Mage','B',51.5],
+['Barats','Tank, Fighter','A',52.8],
+['Baxia','Tank','F',47.1],
+['Beatrix','Marksman','B',49.8],
+['Belerick','Tank','S',53.1],
+['Benedetta','Assassin, Fighter','A',52.3],
+['Brody','Marksman','C',48.4],
+['Bruno','Marksman','F',47.1],
+['Carmilla','Support, Tank','A',52.0],
+['Cecilion','Mage','B',50.0],
+["Chang'e",'Mage','C',48.4],
+['Chip','Support, Tank','C',48.0],
+['Chou','Fighter','F',45.4],
+['Cici','Fighter','F',46.3],
+['Claude','Marksman','C',46.6],
+['Clint','Marksman','C',48.0],
+['Cyclops','Mage','B',51.0],
+['Diggie','Support','A',53.4],
+['Dyrroth','Fighter','B',50.3],
+['Edith','Tank, Marksman','B',50.9],
+['Esmeralda','Tank, Mage','C',48.5],
+['Estes','Support','S',54.4],
+['Eudora','Mage','A',52.5],
+['Fanny','Assassin','F',41.9],
+['Faramis','Support, Mage','B',50.5],
+['Floryn','Support','S',53.7],
+['Franco','Tank','F',42.7],
+['Fredrinn','Fighter, Tank','A',51.7],
+['Freya','Fighter','C',47.5],
+['Gatotkaca','Tank, Fighter','F',45.8],
+['Gloo','Tank','S',54.5],
+['Gord','Mage','A',52.2],
+['Granger','Marksman','F',41.5],
+['Grock','Tank, Fighter','F',46.8],
+['Guinevere','Fighter','B',50.8],
+['Gusion','Assassin','B',48.9],
+['Hanabi','Marksman','A',52.7],
+['Hanzo','Assassin','B',49.7],
+['Harith','Mage','F',45.6],
+['Harley','Assassin, Mage','C',47.9],
+['Hayabusa','Assassin','B',48.7],
+['Helcurt','Assassin','C',47.8],
+['Hilda','Fighter, Tank','B',50.7],
+['Hirara','Assassin','A',52.1],
+['Hylos','Tank','C',47.6],
+['Irithel','Marksman','B',51.0],
+['Ixia','Marksman','C',48.0],
+['Jawhead','Fighter','C',47.7],
+['Johnson','Tank, Support','B',49.7],
+['Joy','Assassin','C',48.9],
+['Julian','Assassin, Fighter','B',50.1],
+['Kadita','Mage, Assassin','A',51.3],
+['Kagura','Mage','B',51.4],
+['Kaja','Support','C',47.6],
+['Kalea','Support, Fighter','F',43.3],
+['Karina','Assassin','F',46.3],
+['Karrie','Marksman','F',46.5],
+['Khaleed','Fighter','B',50.9],
+['Khufra','Tank','S',54.5],
+['Kimmy','Marksman, Mage','C',47.6],
+['Lancelot','Assassin','F',42.8],
+['Lapu-Lapu','Fighter','C',48.4],
+['Layla','Marksman','C',47.5],
+['Leomord','Fighter','B',50.6],
+['Lesley','Marksman, Assassin','C',46.5],
+['Ling','Assassin','A',52.1],
+['Lolita','Support, Tank','A',53.9],
+['Lukas','Fighter','A',53.3],
+['Lunox','Mage','C',49.0],
+['Luo Yi','Mage','F',47.1],
+['Lylia','Mage','C',49.0],
+['Marcel','Support','S+',58.7],
+['Martis','Fighter','C',47.7],
+['Masha','Fighter, Tank','S',56.6],
+['Mathilda','Support, Assassin','F',44.5],
+['Melissa','Marksman','S',56.9],
+['Minotaur','Tank, Support','S',54.5],
+['Minsitthar','Fighter','A',51.0],
+['Miya','Marksman','S',53.3],
+['Moskov','Marksman','C',48.7],
+['Nana','Mage','C',47.3],
+['Natalia','Assassin','B',51.3],
+['Natan','Marksman','C',49.5],
+['Nolan','Assassin','C',48.7],
+['Novaria','Mage','B',49.0],
+['Obsidia','Marksman','B',50.2],
+['Odette','Mage','B',50.5],
+['Paquito','Fighter, Assassin','A',50.9],
+['Pharsa','Mage','C',47.2],
+['Phoveus','Fighter','C',47.8],
+['Popol and Kupa','Marksman','B',52.0],
+['Rafaela','Support','S+',58.6],
+['Roger','Fighter, Marksman','C',48.9],
+['Ruby','Fighter','C',49.0],
+['Saber','Assassin','B',50.3],
+['Selena','Assassin, Mage','C',48.4],
+['Silvanna','Fighter','A',51.5],
+['Sora','Fighter, Assassin','B',49.4],
+['Sun','Fighter','A',53.0],
+['Suyou','Assassin, Fighter','B',49.4],
+['Terizla','Fighter, Tank','B',50.5],
+['Thamuz','Fighter','B',49.3],
+['Tigreal','Tank','F',45.7],
+['Uranus','Tank','B',50.4],
+['Vale','Mage','B',50.6],
+['Valentina','Mage','F',45.2],
+['Valir','Mage','A',52.5],
+['Vexana','Mage','B',50.3],
+['Wanwan','Marksman','F',45.6],
+['X.Borg','Fighter','B',49.9],
+['Xavier','Mage','C',48.5],
+['Yi Sun-shin','Assassin, Marksman','A',52.0],
+['Yin','Fighter, Assassin','B',49.1],
+['Yu Zhong','Fighter','C',48.9],
+['Yve','Mage','B',51.3],
+['Zetian','Mage','A',50.8],
+['Zhask','Mage','B',51.9],
+['Zhuxin','Mage','C',47.9],
+['Zilong','Fighter, Assassin','F',46.4]
+];
+
+const laneMap = {
+Aamon:['Jungle'],
+Akai:['Jungle','Roam'],
+Aldous:['EXP'],
+Alice:['EXP','Mid'],
+Alpha:['Jungle','EXP'],
+Alucard:['Jungle'],
+Angela:['Roam'],
+Argus:['EXP'],
+Arlott:['EXP'],
+Atlas:['Roam'],
+Aulus:['Jungle'],
+Aurora:['Mid'],
+Badang:['EXP'],
+Balmond:['Jungle','EXP'],
+Bane:['Jungle','Mid'],
+Barats:['Jungle','EXP'],
+Baxia:['Jungle','Roam'],
+Beatrix:['Gold'],
+Belerick:['Roam'],
+Benedetta:['EXP','Jungle'],
+Brody:['Gold'],
+  const rankMultiplier = {
+  'All Ranks': { wr: 1, pick: 1, ban: 1 },
+  'Legend': { wr: 0.992, pick: 1.15, ban: 0.88 },
+  'Mythic': { wr: 0.998, pick: 1.02, ban: 0.96 },
+  'Mythic Honor': { wr: 1.003, pick: 0.95, ban: 1.02 },
+  'Mythic Glory': { wr: 1.007, pick: 0.88, ban: 1.08 },
+  'Mythic Immortal': { wr: 1.011, pick: 0.82, ban: 1.13 }
+};
+
+function keyFor(name) {
+  return name.replace(/[^a-zA-Z0-9]/g, '');
+}
+
+function clamp(n, min, max) {
+  return Math.max(min, Math.min(max, n));
+}
+
+function modeledRates(name, tier, wr) {
+  const verified = live[keyFor(name)];
+
+  if (verified) {
+    return {
+      pickRate: verified[0],
+      banRate: verified[1]
+    };
+  }
+
+  const tierBase = {
+    S: 1.25,
+    A: 0.9,
+    B: 0.65,
+    C: 0.38,
+    F: 0.18,
+    'S+': 1.55
+  }[tier] || 0.4;
+
+  const pick = clamp(
+    tierBase + ((wr - 49.5) * 0.12),
+    0.04,
+    3.4
+  );
+
+  const banBase = {
+    S: 8,
+    A: 3,
+    B: 1.5,
+    C: 0.8,
+    F: 0.35,
+    'S+': 14
+  }[tier] || 1;
+
+  const ban = clamp(
+    banBase + Math.max(0, wr - 52) * 1.6,
+    0.02,
+    61
+  );
+
+  return {
+    pickRate: Number(pick.toFixed(2)),
+    banRate: Number(ban.toFixed(2))
+  };
+}
+
+function skillPack(name) {
+  return [
+    {
+      key: 'P',
+      name: 'Passive',
+      desc: `Core passive interaction for ${name}, used to define the hero's main combat loop.`
+    },
+    {
+      key: '1',
+      name: 'Skill 1',
+      desc: 'Primary ability for trading, wave control or setup.'
+    },
+    {
+      key: '2',
+      name: 'Skill 2',
+      desc: 'Secondary ability used for mobility, control or damage depending on the matchup.'
+    },
+    {
+      key: 'ULT',
+      name: 'Ultimate',
+      desc: 'Signature teamfight or finishing ability. Check cooldown and enemy responses before committing.'
+    }
+  ];
+}
+
+function modelledStatsFor(name, tier, wr) {
+  return modeledRates(name, tier, wr);
+}
+
+const heroes = roster.map(([name, role, tier, wr], index) => {
+  const lanes =
+    laneMap[name] ||
+    [roleShort[role.split(',')[0]] || 'Mid'];
+
+  const rate = modelledStatsFor(name, tier, wr);
+
+  const stats = {};
+
+  Object.entries(rankMultiplier).forEach(([rank, multiplier]) => {
+    stats[rank] = {
+      winRate: Number(
+        clamp(
+          wr * multiplier.wr,
+          40,
+          62
+        ).toFixed(2)
+      ),
+
+      pickRate: Number(
+        clamp(
+          rate.pickRate * multiplier.pick,
+          0.01,
+          5
+        ).toFixed(2)
+      ),
+
+      banRate: Number(
+        clamp(
+          rate.banRate * multiplier.ban,
+          0.01,
+          65
+        ).toFixed(2)
+      )
+    };
+  });
+
+  return {
+    id: index + 1,
+    name,
+    role,
+    tier,
+    winRate: wr,
+    lanes,
+    roleShort:
+      roleShort[role.split(',')[0]] || 'MID',
+    hue:
+      hueMap[role.split(',')[0]] || 220,
+    initials: name
+      .split(/\s+/)
+      .map(x => x[0])
+      .slice(0, 2)
+      .join('')
+      .toUpperCase(),
+    stats,
+    skills: skillPack(name)
+  };
+});
+
+const laneLabels = [
+  'All',
+  'EXP',
+  'Gold',
+  'Jungle',
+  'Mid',
+  'Roam'
+];
+
+const rankLabels = [
+  'All Ranks',
+  'Legend',
+  'Mythic',
+  'Mythic Honor',
+  'Mythic Glory',
+  'Mythic Immortal'
+];
+
+const tierInfo = {
+  'S+': {
+    score: 6,
+    title: 'Priority Meta',
+    meaning:
+      'The strongest current meta candidates, high-impact priority picks or bans.'
+  },
+
+  S: {
+    score: 5,
+    title: 'Strong Meta',
+    meaning:
+      'Excellent current choices with strong performance or draft value.'
+  },
+
+  A: {
+    score: 4,
+    title: 'Solid Meta',
+    meaning:
+      'Good, reliable picks that fit the current environment.'
+  },
+
+  B: {
+    score: 3,
+    title: 'Viable',
+    meaning:
+      'Playable and useful, but generally lower priority than current meta picks.'
+  },
+
+  C: {
+    score: 2,
+    title: 'Situational',
+    meaning:
+      'A bit behind the current meta, but still workable with the right draft.'
+  },
+
+  F: {
+    score: 1,
+    title: 'Off-Meta',
+    meaning:
+      'Currently weak by the snapshot benchmark. Use for comfort or niche plans.'
+  }
+};
+
+function getRecommendedBuild(hero) {
+  return (
+    specialBuilds[hero.name] ||
+    genericBuild[hero.lanes[0]] ||
+    genericBuild.Mid
+  );
+}
+
+function getCounters(hero) {
+  return (
+    counterPools[hero.lanes[0]] ||
+    counterPools.Mid
+  );
+}
+
+const { useMemo, useState } = React;
+
+function HeroCard({ hero, stats, onOpen }) {
+  const tierClass =
+    `tier-${hero.tier
+      .replace('+', 'plus')
+      .toLowerCase()}`;
+
+  return (
+    <button
+      className="hero-card"
+      onClick={onOpen}
+    >
+      <div
+        className="hero-portrait"
+        style={{ '--hue': hero.hue }}
+      >
+        <div className="portrait-glow"></div>
+
+        <div className="portrait-initials">
+          {hero.initials}
+        </div>
+
+        <div className="role-dot">
+          {hero.roleShort}
+        </div>
+      </div>
+
+      <div className="hero-card-body">
+        <div className="hero-title-row">
+          <strong>{hero.name}</strong>
+
+          <span className={`mini-tier ${tierClass}`}>
+            {hero.tier}
+          </span>
+        </div>
+
+        <div className="hero-role">
+          {hero.role} · {hero.lanes.join(' / ')}
+        </div>
+
+        <div className="stats-row">
+          <span>
+            <b>{stats.winRate}%</b> WR
+          </span>
+
+          <span>
+            <b>{stats.pickRate}%</b> Pick
+          </span>
+
+          <span>
+            <b>{stats.banRate}%</b> Ban
+          </span>
+        </div>
+      </div>
+    </button>
+  );
+}
+
+function Stat({ label, value }) {
+  return (
+    <div>
+      <b>{value}</b>
+      <span>{label}</span>
+    </div>
+  );
+}
+
+function InfoPanel({ title, children }) {
+  return (
+    <div className="info-panel">
+      <h3>{title}</h3>
+      {children}
+    </div>
+  );
+}
+
+function HeroProfile({ hero, rank, onBack }) {
+  const stats =
+    hero.stats[rank] ||
+    hero.stats['All Ranks'];
+
+  const build =
+    getRecommendedBuild(hero);
+
+  const counters =
+    getCounters(hero);
+
+  const tierClass =
+    `tier-${hero.tier
+      .replace('+', 'plus')
+      .toLowerCase()}`;
+
+  return (
+    <div className="hero-profile">
+      <button
+        className="back-btn"
+        onClick={onBack}
+      >
+        ← Back
+      </button>
+
+      <div className="profile-head">
+        <div
+          className="profile-portrait hero-portrait"
+          style={{ '--hue': hero.hue }}
+        >
+          <div className="portrait-initials large">
+            {hero.initials}
+          </div>
+        </div>
+
+        <div className="profile-main">
+          <div className="profile-name-row">
+            <h2>{hero.name}</h2>
+
+            <span
+              className={`tier-pill ${tierClass}`}
+            >
+              {hero.tier}
+            </span>
+          </div>
+
+          <div className="profile-role">
+            {hero.role} · {hero.lanes.join(' / ')}
+          </div>
+
+          <div className="profile-stats">
+            <Stat
+              label="Win"
+              value={`${stats.winRate}%`}
+            />
+
+            <Stat
+              label="Pick"
+              value={`${stats.pickRate}%`}
+            />
+
+            <Stat
+              label="Ban"
+              value={`${stats.banRate}%`}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="profile-tabs">
+        <span className="selected">
+          Overview
+        </span>
+
+        <span>Skills</span>
+        <span>Build</span>
+        <span>Counters</span>
+      </div>
+
+      <div className="profile-grid">
+
+        <InfoPanel title="⚔ Skills">
+          <div className="skill-list">
+            {hero.skills.map(skill => (
+              <div
+                className="skill-row"
+                key={skill.name}
+              >
+                <div className="skill-key">
+                  {skill.key}
+                </div>
+
+                <div>
+                  <b>{skill.name}</b>
+
+                  <p>
+                    {skill.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </InfoPanel>
+
+        <InfoPanel title="🛡 Recommended Build">
+          <div className="items">
+            {build.items.map(
+              (item, index) => (
+                <div
+                  className="item-chip"
+                  key={item}
+                >
+                  <span>
+                    {index + 1}
+                  </span>
+
+                  {item}
+                </div>
+              )
+            )}
+          </div>
+
+          <div className="build-meta">
+            <b>Emblem:</b> {build.emblem}
+            <br />
+
+            <b>Talents:</b>{' '}
+            {build.talents.join(' · ')}
+            <br />
+
+            <b>Spell:</b> {build.spell}
+          </div>
+
+          <div className="why">
+            {build.why}
+          </div>
+        </InfoPanel>
+
+        <InfoPanel title="🔁 Counter Heroes">
+          <div className="counter-grid">
+            {counters.heroes.map(
+              counter => (
+                <div
+                  className="counter-chip"
+                  key={counter}
+                >
+                  {counter}
+                </div>
+              )
+            )}
+          </div>
+        </InfoPanel>
+
+        <InfoPanel title="🛡️ Counter Items">
+          <div className="counter-grid">
+            {counters.items.map(
+              item => (
+                <div
+                  className="counter-chip"
+                  key={item}
+                >
+                  {item}
+                </div>
+              )
+            )}
+          </div>
+        </InfoPanel>
+
+      </div>
+    </div>
+  );
+}
+
+function PageHeading({
+  icon,
+  title,
+  subtitle
+}) {
+  return (
+    <div className="page-heading">
+      <div className="heading-icon">
+        {icon}
+      </div>
+
+      <div>
+        <h1>{title}</h1>
+        <p>{subtitle}</p>
+      </div>
+    </div>
+  );
+}
+
+function CoachAI({
+  role,
+  setRole,
+  enemy,
+  setEnemy,
+  openHero
+}) {
+  const [yourHero, setYourHero] =
+    useState('');
+
+  const enemyHero = heroes.find(
+    hero =>
+      hero.name.toLowerCase() ===
+      enemy.trim().toLowerCase()
+  );
+
+  const your = heroes.find(
+    hero =>
+      hero.name.toLowerCase() ===
+      yourHero.trim().toLowerCase()
+  );
+
+  const best =
+    heroes
+      .filter(hero =>
+        hero.lanes.includes(role)
+      )
+      .sort(
+        (a, b) =>
+          tierInfo[b.tier].score -
+          tierInfo[a.tier].score ||
+          b.winRate - a.winRate
+      )[0];
+
+  return (
+    <section>
+      <PageHeading
+        icon="🧠"
+        title="Coach AI"
+        subtitle="Draft helper prototype. Give KronAI your role and an enemy pick."
+      />
+
+      <div className="coach-grid">
+
+        <div className="coach-panel">
+          <div className="panel-kicker">
+            STEP 01
+          </div>
+
+          <h2>Your role</h2>
+
+          <div className="segmented">
+            {[
+              'EXP',
+              'Jungle',
+              'Mid',
+              'Gold',
+              'Roam'
+            ].map(r => (
+              <button
+                key={r}
+                className={
+                  role === r
+                    ? 'seg active'
+                    : 'seg'
+                }
+                onClick={() =>
+                  setRole(r)
+                }
+              >
+                {r}
+              </button>
+            ))}
+          </div>
+
+          <div className="panel-kicker mt">
+            STEP 02
+          </div>
+
+          <h2>Enemy hero</h2>
+
+          <div className="input-box">
+            🎯
+
+            <input
+              value={enemy}
+              onChange={e =>
+                setEnemy(e.target.value)
+              }
+              placeholder="e.g. Gloo"
+            />
+          </div>
+
+          <div className="panel-kicker mt">
+            STEP 03
+          </div>
+
+          <h2>Your hero</h2>
+
+          <div className="input-box">
+            🛡
+
+            <input
+              value={yourHero}
+              onChange={e =>
+                setYourHero(e.target.value)
+              }
+              placeholder="e.g. Thamuz"
+            />
+          </div>
+        </div>
+
+        <div className="coach-result">
+
+          <div className="coach-title">
+            <div className="ai-orb">
+              🤖
+            </div>
+
+            <div>
+              <b>KRONAI ANALYSIS</b>
+              <span>
+                Current snapshot
+              </span>
+            </div>
+          </div>
+
+          {best && (
+            <div className="recommend-hero">
+
+              <div
+                className="hero-portrait hero-portrait-big"
+                style={{
+                  '--hue': best.hue
+                }}
+              >
+                <div className="portrait-initials large">
+                  {best.initials}
+                </div>
+              </div>
+
+              <div>
+                <small>
+                  TOP RECOMMENDATION
+                </small>
+
+                <h2>
+                  {best.name}
+                </h2>
+
+                <p>
+                  {best.role} · {role}
+                </p>
+
+                <span
+                  className={`tier-pill tier-${best.tier
+                    .replace('+', 'plus')
+                    .toLowerCase()}`}
+                >
+                  {best.tier}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {enemyHero ? (
+            <div className="coach-box">
+              <b>
+                Enemy detected:{' '}
+                {enemyHero.name}
+              </b>
+
+              <p>
+                KronAI would compare
+                matchup notes, counter
+                heroes, item answers and
+                draft fit here.
+              </p>
+
+              {best && (
+                <button
+                  className="primary-btn"
+                  onClick={() =>
+                    openHero(best)
+                  }
+                >
+                  Open recommendation
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="coach-box">
+              <b>Tip</b>
+
+              <p>
+                Enter an enemy hero to
+                turn the coach card into
+                a matchup recommendation.
+              </p>
+            </div>
+          )}
+
+          {your && (
+            <div className="coach-box">
+              <b>
+                Your pick: {your.name}
+              </b>
+
+              <p>
+                {getRecommendedBuild(your).why}
+              </p>
+            </div>
+          )}
+
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DraftView({ openHero }) {
+  const [side, setSide] =
+    useState('your');
+
+  const [slots, setSlots] =
+    useState({
+      EXP: null,
+      Jungle: null,
+      Mid: null,
+      Gold: null,
+      Roam: null
+    });
+
+  const lanes = [
+    'EXP',
+    'Jungle',
+    'Mid',
+    'Gold',
+    'Roam'
+  ];
+
+  function pickHero(lane) {
+    const laneHeroes =
+      heroes.filter(hero =>
+        hero.lanes.includes(lane)
+      );
+
+    if (!laneHeroes.length) return;
+
+    const hero =
+      laneHeroes[
+        Math.floor(
+          Math.random() *
+          laneHeroes.length
+        )
+      ];
+
+    setSlots(current => ({
+      ...current,
+      [lane]: hero
+    }));
+  }
+
+  return (
+    <section>
+      <PageHeading
+        icon="🎯"
+        title="Draft Board"
+        subtitle="Prototype 5-role draft workspace."
+      />
+
+      <div className="draft-side">
+        <button
+          className={
+            side === 'your'
+              ? 'active'
+              : ''
+          }
+          onClick={() =>
+            setSide('your')
+          }
+        >
+          Your Team
+        </button>
+
+        <button
+          className={
+            side === 'enemy'
+              ? 'active'
+              : ''
+          }
+          onClick={() =>
+            setSide('enemy')
+          }
+        >
+          Enemy Team
+        </button>
+      </div>
+
+      <div className="draft-grid">
+        {lanes.map(lane => (
+          <div
+            className="draft-slot"
+            key={lane}
+          >
+            <div className="slot-lane">
+              {lane}
+            </div>
+
+            <button
+              onClick={() =>
+                pickHero(lane)
+              }
+            >
+              {slots[lane]
+                ? slots[lane].name
+                : 'Pick Hero'}
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <div className="draft-analysis">
+        🧪
+
+        <div>
+          <b>Quick read</b>
+
+          <p>
+            Next layer: real ban
+            recommendations, synergy
+            scores and matchup-specific
+            draft suggestions.
+          </p>
+        </div>
+      </div>
+
+      <div className="hero-grid small-grid">
+        {heroes.slice(0, 24).map(hero => (
+          <HeroCard
+            key={hero.name}
+            hero={hero}
+            stats={hero.stats['All Ranks']}
+            onOpen={() =>
+              openHero(hero)
+            }
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function App() {
+  const [tab, setTab] =
+    useState('Rankings');
+
+  const [lane, setLane] =
+    useState('All');
+
+  const [rank, setRank] =
+    useState('All Ranks');
+
+  const [query, setQuery] =
+    useState('');
+
+  const [selectedHero, setSelectedHero] =
+    useState(null);
+
+  const [coachRole, setCoachRole] =
+    useState('Jungle');
+
+  const [coachEnemy, setCoachEnemy] =
+    useState('');
+
+  const filteredHeroes = useMemo(() => {
+    const q =
+      query.trim().toLowerCase();
+
+    return heroes.filter(hero => {
+      const laneMatch =
+        lane === 'All' ||
+        hero.lanes.includes(lane);
+
+      const searchMatch =
+        !q ||
+        hero.name
+          .toLowerCase()
+          .includes(q) ||
+        hero.role
+          .toLowerCase()
+          .includes(q);
+
+      return laneMatch && searchMatch;
+    });
+  }, [lane, query]);
+
+  const rankedByTier =
+    useMemo(() => {
+      return [
+        'S+',
+        'S',
+        'A',
+        'B',
+        'C',
+        'F'
+      ].map(tier => ({
+        tier,
+        items:
+          filteredHeroes.filter(
+            hero =>
+              hero.tier === tier
+          )
+      }));
+    }, [filteredHeroes]);
+
+  function openHero(hero) {
+    setSelectedHero(hero);
+    setTab('Heroes');
+  }
+
+  function currentStats(hero) {
+    return (
+      hero.stats[rank] ||
+      hero.stats['All Ranks']
+    );
+  }
+
+  return (
+    <div className="app-shell">
+
+      <header className="topbar">
+
+        <div className="brand-wrap">
+          <div className="brand-mark">
+            👑
+          </div>
+
+          <div>
+            <div className="brand-name">
+              KronAI
+            </div>
+
+            <div className="brand-sub">
+              MLBB AI COACH
+            </div>
+          </div>
+        </div>
+
+        <div className="top-search">
+          🔍
+
+          <input
+            value={query}
+            onChange={e =>
+              setQuery(e.target.value)
+            }
+            placeholder="Search hero..."
+          />
+        </div>
+
+        <div className="patch-chip">
+          Patch 2.1.95a · Sep 2026
+        </div>
+
+      </header>
+
+      <nav className="main-nav">
+
+        {[
+          ['Coach AI', '🧠'],
+          ['Rankings', '📊'],
+          ['Draft', '🎯'],
+          ['Heroes', '⚔️'],
+          ['Builds', '🛡️'],
+          ['Counters', '🔁']
+        ].map(([label, icon]) => (
+          <button
+            key={label}
+            className={
+              tab === label
+                ? 'nav-btn active'
+                : 'nav-btn'
+            }
+            onClick={() =>
+              setTab(label)
+            }
+          >
+            {icon} {label}
+          </button>
+        ))}
+
+      </nav>
+
+      <main className="content">
+
+        {tab === 'Coach AI' && (
+          <CoachAI
+            role={coachRole}
+            setRole={setCoachRole}
+            function DraftView({openHero}) {
+  // ...
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+        </script>
+</body>
+</html>
