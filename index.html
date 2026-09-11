@@ -3,178 +3,192 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>KronAI | MLBB AI Coach</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    body {
-        font-family: Arial, sans-serif;
-        background: #070a12;
-        color: white;
-        min-height: 100vh;
-    }
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #050812;
+    color: #f5f7ff;
+}
 
-    header {
-        padding: 25px 20px;
-        text-align: center;
-        background: linear-gradient(135deg, #10172b, #090b14);
-        border-bottom: 1px solid #242b45;
+header {
+    text-align: center;
+    padding: 35px 15px 25px;
+    background: linear-gradient(180deg,#11182d,#080c18);
+    border-bottom: 1px solid #202942;
+}
+
+.logo {
+    font-size: 42px;
+    font-weight: 800;
+}
+
+.logo span {
+    color: #806cff;
+}
+
+.subtitle {
+    color: #9ba5c4;
+    margin-top: 5px;
+    font-size: 17px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 25px 15px 50px;
+}
+
+.card {
+    background: #101625;
+    border: 1px solid #222b42;
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+.lane-grid {
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+    gap: 10px;
+}
+
+.lane-btn {
+    padding: 16px 8px;
+    border: 1px solid #303b59;
+    background: #151d30;
+    color: white;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.lane-btn:hover {
+    transform: translateY(-2px);
+    border-color: #806cff;
+    background: #1b2440;
+}
+
+.lane-btn.active {
+    background: linear-gradient(135deg,#694cff,#9b5cff);
+    border-color: #a996ff;
+}
+
+.search {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #303a55;
+    background: #080d19;
+    color: white;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(150px,1fr));
+    gap: 12px;
+}
+
+.hero {
+    padding: 17px;
+    border-radius: 15px;
+    background: #0b1120;
+    border: 1px solid #26314b;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.hero:hover {
+    transform: translateY(-3px);
+    border-color: #806cff;
+}
+
+.hero-name {
+    font-weight: bold;
+    font-size: 17px;
+}
+
+.hero-role {
+    color: #929dbb;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.hero-tier {
+    margin-top: 8px;
+    color: #a98cff;
+    font-size: 12px;
+}
+
+.result {
+    display: none;
+}
+
+.result.show {
+    display: block;
+}
+
+.build-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+    gap: 15px;
+}
+
+.info-box {
+    background: #080e1c;
+    border: 1px solid #252f48;
+    border-radius: 15px;
+    padding: 18px;
+}
+
+.info-box h3 {
+    margin-top: 0;
+    color: #9d8cff;
+}
+
+.item {
+    padding: 8px 0;
+    border-bottom: 1px solid #1d263a;
+}
+
+.item:last-child {
+    border-bottom: none;
+}
+
+.tip {
+    color: #aeb7cf;
+    line-height: 1.6;
+}
+
+footer {
+    text-align: center;
+    color: #68728e;
+    padding: 25px;
+}
+
+@media(max-width:700px) {
+    .lane-grid {
+        grid-template-columns: repeat(2,1fr);
     }
 
     .logo {
         font-size: 34px;
-        font-weight: bold;
-        letter-spacing: 2px;
     }
-
-    .logo span {
-        color: #7c5cff;
-    }
-
-    .subtitle {
-        color: #9da5bd;
-        margin-top: 7px;
-    }
-
-    .container {
-        width: 92%;
-        max-width: 900px;
-        margin: 25px auto;
-    }
-
-    .panel {
-        background: #101522;
-        border: 1px solid #252d46;
-        border-radius: 18px;
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-
-    .panel h2 {
-        margin-bottom: 15px;
-    }
-
-    input,
-    select {
-        width: 100%;
-        padding: 14px;
-        margin-top: 8px;
-        margin-bottom: 15px;
-        background: #080c17;
-        border: 1px solid #303955;
-        border-radius: 10px;
-        color: white;
-        font-size: 16px;
-    }
-
-    button {
-        width: 100%;
-        padding: 14px;
-        border: none;
-        border-radius: 10px;
-        background: #7657ff;
-        color: white;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    button:hover {
-        opacity: 0.9;
-    }
-
-    .hero-title {
-        font-size: 30px;
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-
-    .role {
-        color: #aeb6ce;
-        margin-bottom: 18px;
-    }
-
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 14px;
-    }
-
-    .card {
-        background: #0b101c;
-        border: 1px solid #293149;
-        border-radius: 14px;
-        padding: 16px;
-    }
-
-    .card h3 {
-        margin-bottom: 10px;
-        font-size: 17px;
-    }
-
-    .card p {
-        color: #c4c9d8;
-        line-height: 1.5; 
-    }
-
-    .item {
-        display: inline-block;
-        background: #191f32;
-        border: 1px solid #343d5a;
-        padding: 7px 10px;
-        border-radius: 8px;
-        margin: 4px 3px 0 0;
-        font-size: 14px;
-    }
-
-    .difficulty {
-        font-weight: bold;
-    }
-
-    .easy {
-        color: #6ee7a0;
-    }
-
-    .medium {
-        color: #ffd166;
-    }
-
-    .hard {
-        color: #ff7777;
-    }
-
-    .status {
-        text-align: center;
-        color: #777f98;
-        margin-top: 20px;
-        font-size: 13px;
-    }
-
-    .empty {
-        text-align: center;
-        color: #8d96ad;
-        padding: 20px;
-    }
-
-    @media (max-width: 650px) {
-        .grid {
-            grid-template-columns: 1fr;
-        }
-
-        .logo {
-            font-size: 29px;
-        }
-
-        .hero-title {
-            font-size: 26px;
-        }
-    }
+}
 </style>
 </head>
 
@@ -187,421 +201,526 @@
 
 <div class="container">
 
-    <!-- HERO SELECTOR -->
-    <div class="panel">
+<div class="card">
+    <h2>🎯 Choose Your Lane</h2>
 
-        <h2>🦸 Select Your Hero</h2>
-
-        <input
-            type="text"
-            id="search"
-            placeholder="Search hero..."
-            oninput="searchHero()"
-        >
-
-        <select id="heroSelect" onchange="showHero()">
-            <option value="">Choose a hero...</option>
-        </select>
-
+    <div class="lane-grid">
+        <button class="lane-btn" onclick="selectLane('EXP',this)">🥊 EXP</button>
+        <button class="lane-btn" onclick="selectLane('Jungle',this)">🌲 Jungle</button>
+        <button class="lane-btn" onclick="selectLane('Mid',this)">🔮 Mid</button>
+        <button class="lane-btn" onclick="selectLane('Gold',this)">🏹 Gold</button>
+        <button class="lane-btn" onclick="selectLane('Roam',this)">🛡️ Roam</button>
     </div>
+</div>
 
+<div class="card" id="heroSection" style="display:none;">
+    <h2 id="laneTitle">Heroes</h2>
 
-    <!-- HERO RESULT -->
-    <div id="result">
+    <input
+        id="search"
+        class="search"
+        placeholder="🔎 Search hero..."
+        oninput="renderHeroes()"
+    >
 
-        <div class="panel empty">
-            Choose a hero above to activate KronAI.
+    <div id="heroGrid" class="hero-grid"></div>
+</div>
+
+<div class="card result" id="result">
+    <h2 id="resultTitle"></h2>
+
+    <div class="build-grid">
+
+        <div class="info-box">
+            <h3>⚔️ Recommended Build</h3>
+            <div id="build"></div>
+        </div>
+
+        <div class="info-box">
+            <h3>🧠 Emblem</h3>
+            <div id="emblem"></div>
+        </div>
+
+        <div class="info-box">
+            <h3>⚡ Battle Spell</h3>
+            <div id="spell"></div>
+        </div>
+
+        <div class="info-box">
+            <h3>📌 Playstyle</h3>
+            <div id="playstyle" class="tip"></div>
         </div>
 
     </div>
-
-
-    <div class="status">
-        KronAI V0.2 • Prototype Recommendation Engine
-    </div>
+</div>
 
 </div>
+
+<footer>
+    KronAI V0.3 • Prototype Recommendation Engine
+</footer>
 
 
 <script>
 
-const heroes = {
-
-    "Thamuz": {
-        roles: "EXP Lane / Jungle",
-        spell: "Vengeance",
-        difficulty: "Medium",
-        difficultyClass: "medium",
-
-        build: [
-            "Tough Boots",
-            "Corrosion Scythe",
-            "War Axe",
-            "Queen's Wings",
-            "Oracle",
-            "Immortality"
-        ],
-
-        playstyle:
-            "Play aggressively around sustained fights. Use your mobility and damage to pressure the enemy frontline, but avoid diving too deep before enemy crowd control is used.",
-
-        strong:
-            "Short-range fighters and heroes who struggle against extended fights.",
-
-        weak:
-            "Heavy kiting, strong crowd control and heroes that can safely attack from range."
-    },
-
-
-    "Fanny": {
-        roles: "Jungle",
-        spell: "Retribution",
-        difficulty: "Hard",
-        difficultyClass: "hard",
-
-        build: [
-            "Tough Boots",
-            "Bloodlust Axe",
-            "Hunter Strike",
-            "Malefic Roar",
-            "Blade of Despair",
-            "Immortality"
-        ],
-
-        playstyle:
-            "Farm efficiently, watch your energy and look for isolated targets. Enter fights from unexpected angles and disengage before the enemy can lock you down.",
-
-        strong:
-            "Squishy heroes with limited mobility and weak early-game defense.",
-
-        weak:
-            "Heavy crowd control, anti-dive heroes and compositions that protect their backline."
-    },
-
-
-    "Ling": {
-        roles: "Jungle",
-        spell: "Retribution",
-        difficulty: "Hard",
-        difficultyClass: "hard",
-
-        build: [
-            "Tough Boots",
-            "Berserker's Fury",
-            "Haas's Claws",
-            "Endless Battle",
-            "Malefic Roar",
-            "Immortality"
-        ],
-
-        playstyle:
-            "Use walls to control your approach. Prioritize farming and pick opportunities rather than forcing every team fight.",
-
-        strong:
-            "Backline heroes that lack reliable escape tools.",
-
-        weak:
-            "Reliable crowd control and compositions that can protect their backline."
-    },
-
-
-    "Paquito": {
-        roles: "EXP Lane / Jungle",
-        spell: "Flicker",
-        difficulty: "Hard",
-        difficultyClass: "hard",
-
-        build: [
-            "Rapid Boots",
-            "Blade of Heptaseas",
-            "Sky Piercer",
-            "Hunter Strike",
-            "Malefic Roar",
-            "Blade of Despair"
-        ],
-
-        playstyle:
-            "Use short combos and mobility to create burst windows. Do not waste your enhanced skills before an important fight.",
-
-        strong:
-            "Slow or immobile heroes that struggle against repeated dashes.",
-
-        weak:
-            "Strong defensive frontlines and heroes with reliable crowd control."
-    },
-
-
-    "Gusion": {
-        roles: "Jungle / Mid",
-        spell: "Retribution",
-        difficulty: "Hard",
-        difficultyClass: "hard",
-
-        build: [
-            "Arcane Boots",
-            "Genius Wand",
-            "Holy Crystal",
-            "Divine Glaive",
-            "Blood Wings",
-            "Immortality"
-        ],
-
-        playstyle:
-            "Look for isolated targets and use your combo carefully. Your value comes from eliminating priority targets rather than wasting abilities on tanks.",
-
-        strong:
-            "Squishy backline heroes.",
-
-        weak:
-            "High magic defense, tanky compositions and reliable crowd control."
-    },
-
-
-    "Belerick": {
-        roles: "Roam",
-        spell: "Vengeance",
-        difficulty: "Easy",
-        difficultyClass: "easy",
-
-        build: [
-            "Tough Boots",
-            "Dominance Ice",
-            "Athena's Shield",
-            "Radiant Armor",
-            "Guardian Helmet",
-            "Immortality"
-        ],
-
-        playstyle:
-            "Protect your damage dealers and punish enemies that repeatedly attack you. Your job is to create space and disrupt enemy positioning.",
-
-        strong:
-            "Basic-attack-heavy compositions.",
-
-        weak:
-            "High burst magic damage and heroes that can safely poke from range."
-    },
-
-
-    "Atlas": {
-        roles: "Roam",
-        spell: "Flicker",
-        difficulty: "Medium",
-        difficultyClass: "medium",
-
-        build: [
-            "Tough Boots",
-            "Dominance Ice",
-            "Athena's Shield",
-            "Radiant Armor",
-            "Immortality",
-            "Antique Cuirass"
-        ],
-
-        playstyle:
-            "Wait for a strong engage opportunity. Your ultimate can decide an entire team fight, so avoid using it on low-value targets.",
-
-        strong:
-            "Grouped enemy teams and low-mobility backlines.",
-
-        weak:
-            "Purify users, disengage tools and compositions that spread out."
-    },
-
-
-    "Zhuxin": {
-        roles: "Mid Lane",
-        spell: "Flicker",
-        difficulty: "Medium",
-        difficultyClass: "medium",
-
-        build: [
-            "Arcane Boots",
-            "Genius Wand",
-            "Glowing Wand",
-            "Holy Crystal",
-            "Divine Glaive",
-            "Blood Wings"
-        ],
-
-        playstyle:
-            "Control space from range and constantly pressure enemy positioning. Stay behind your frontline and avoid unnecessary close-range fights.",
-
-        strong:
-            "Slow frontliners and grouped enemies.",
-
-        weak:
-            "Fast assassins and heroes capable of reaching the backline."
-    },
-
-
-    "Xavier": {
-        roles: "Mid Lane",
-        spell: "Flameshot",
-        difficulty: "Medium",
-        difficultyClass: "medium",
-
-        build: [
-            "Arcane Boots",
-            "Genius Wand",
-            "Holy Crystal",
-            "Divine Glaive",
-            "Wishing Lantern",
-            "Winter Crown"
-        ],
-
-        playstyle:
-            "Maintain distance and use your range to control objectives and choke points. Avoid being caught without an escape option.",
-
-        strong:
-            "Slow heroes and grouped teams.",
-
-        weak:
-            "Mobile assassins and heavy dive compositions."
-    },
-
-
-    "Beatrix": {
-        roles: "Gold Lane",
-        spell: "Flicker",
-        difficulty: "Hard",
-        difficultyClass: "hard",
-
-        build: [
-            "Swift Boots",
-            "Haas's Claws",
-            "Berserker's Fury",
-            "Malefic Roar",
-            "Wind of Nature",
-            "Immortality"
-        ],
-
-        playstyle:
-            "Farm safely and use your weapon options according to the situation. Positioning is more important than forcing kills.",
-
-        strong:
-            "Slow frontliners and predictable enemy approaches.",
-
-        weak:
-            "Hard dive and assassins that can reach you before you reposition."
-    },
-
-
-    "Balmond": {
-        roles: "EXP Lane / Jungle",
-        spell: "Retribution",
-        difficulty: "Easy",
-        difficultyClass: "easy",
-
-        build: [
-            "Tough Boots",
-            "War Axe",
-            "Hunter Strike",
-            "Brute Force Breastplate",
-            "Queen's Wings",
-            "Immortality"
-        ],
-
-        playstyle:
-            "Use your durability to contest objectives and extended fights. Look for opportunities to secure kills with your ultimate.",
-
-        strong:
-            "Close-range fighters and teams that struggle to stop sustained pressure.",
-
-        weak:
-            "Strong kiting and heavy percentage-health damage."
-    },
-
-
-    "Edith": {
-        roles: "Roam / EXP",
-        spell: "Flicker",
-        difficulty: "Medium",
-        difficultyClass: "medium",
-
-        build: [
-            "Tough Boots",
-            "Dominance Ice",
-            "Athena's Shield",
-            "Radiant Armor",
-            "Holy Crystal",
-            "Divine Glaive"
-        ],
-
-        playstyle:
-            "Build defensive stats early, then use your ultimate to turn stored energy into offensive pressure. Look for coordinated engages.",
-
-        strong:
-            "Teams that rely on extended fights and basic attacks.",
-
-        weak:
-            "Long-range poke and enemies that can disengage before your transformation."
-    }
+/* =========================================================
+   KRONAI HERO DATABASE
+   Current working roster: 133 heroes
+========================================================= */
+
+const heroes = [
+
+/* EXP */
+{name:"Aldous",lane:"EXP",role:"Fighter",tier:"B"},
+{name:"Alice",lane:"EXP",role:"Tank/Mage",tier:"B"},
+{name:"Argus",lane:"EXP",role:"Fighter",tier:"S"},
+{name:"Arlott",lane:"EXP",role:"Fighter/Assassin",tier:"C"},
+{name:"Badang",lane:"EXP",role:"Fighter",tier:"B"},
+{name:"Benedetta",lane:"EXP",role:"Assassin/Fighter",tier:"A"},
+{name:"Chou",lane:"EXP",role:"Fighter",tier:"D"},
+{name:"Cici",lane:"EXP",role:"Fighter",tier:"D"},
+{name:"Dyrroth",lane:"EXP",role:"Fighter",tier:"B"},
+{name:"Edith",lane:"EXP",role:"Tank/Marksman",tier:"B"},
+{name:"Esmeralda",lane:"EXP",role:"Tank/Mage",tier:"C"},
+{name:"Freya",lane:"EXP",role:"Fighter",tier:"C"},
+{name:"Guinevere",lane:"EXP",role:"Fighter",tier:"B"},
+{name:"Hilda",lane:"EXP",role:"Fighter/Tank",tier:"B"},
+{name:"Julian",lane:"EXP",role:"Assassin/Fighter",tier:"B"},
+{name:"Khaleed",lane:"EXP",role:"Fighter",tier:"B"},
+{name:"Lapu-Lapu",lane:"EXP",role:"Fighter",tier:"C"},
+{name:"Leomord",lane:"EXP",role:"Fighter",tier:"B"},
+{name:"Lukas",lane:"EXP",role:"Fighter",tier:"A"},
+{name:"Masha",lane:"EXP",role:"Fighter/Tank",tier:"S"},
+{name:"Minsitthar",lane:"EXP",role:"Fighter",tier:"A"},
+{name:"Paquito",lane:"EXP",role:"Fighter/Assassin",tier:"A"},
+{name:"Phoveus",lane:"EXP",role:"Fighter",tier:"C"},
+{name:"Ruby",lane:"EXP",role:"Fighter",tier:"C"},
+{name:"Silvanna",lane:"EXP",role:"Fighter",tier:"A"},
+{name:"Sora",lane:"EXP",role:"Fighter/Assassin",tier:"B"},
+{name:"Sun",lane:"EXP",role:"Fighter",tier:"A"},
+{name:"Terizla",lane:"EXP",role:"Fighter/Tank",tier:"B"},
+{name:"Thamuz",lane:"EXP",role:"Fighter",tier:"B"},
+{name:"Uranus",lane:"EXP",role:"Tank",tier:"B"},
+{name:"X.Borg",lane:"EXP",role:"Fighter",tier:"B"},
+{name:"Yu Zhong",lane:"EXP",role:"Fighter",tier:"C"},
+{name:"Zilong",lane:"EXP",role:"Fighter/Assassin",tier:"D"},
+
+/* JUNGLE */
+{name:"Aamon",lane:"Jungle",role:"Assassin",tier:"B"},
+{name:"Alpha",lane:"Jungle",role:"Fighter",tier:"D"},
+{name:"Alucard",lane:"Jungle",role:"Fighter/Assassin",tier:"C"},
+{name:"Aulus",lane:"Jungle",role:"Fighter",tier:"B"},
+{name:"Balmond",lane:"Jungle",role:"Fighter",tier:"C"},
+{name:"Bane",lane:"Jungle",role:"Fighter/Mage",tier:"B"},
+{name:"Barats",lane:"Jungle",role:"Tank/Fighter",tier:"A"},
+{name:"Baxia",lane:"Jungle",role:"Tank",tier:"D"},
+{name:"Fanny",lane:"Jungle",role:"Assassin",tier:"D"},
+{name:"Fredrinn",lane:"Jungle",role:"Fighter/Tank",tier:"A"},
+{name:"Harley",lane:"Jungle",role:"Assassin/Mage",tier:"C"},
+{name:"Hanzo",lane:"Jungle",role:"Assassin",tier:"B"},
+{name:"Hayabusa",lane:"Jungle",role:"Assassin",tier:"B"},
+{name:"Hirara",lane:"Jungle",role:"Assassin",tier:"A"},
+{name:"Joy",lane:"Jungle",role:"Assassin",tier:"C"},
+{name:"Karina",lane:"Jungle",role:"Assassin",tier:"D"},
+{name:"Lancelot",lane:"Jungle",role:"Assassin",tier:"D"},
+{name:"Ling",lane:"Jungle",role:"Assassin",tier:"A"},
+{name:"Martis",lane:"Jungle",role:"Fighter",tier:"C"},
+{name:"Nolan",lane:"Jungle",role:"Assassin",tier:"C"},
+{name:"Roger",lane:"Jungle",role:"Fighter/Marksman",tier:"C"},
+{name:"Saber",lane:"Jungle",role:"Assassin",tier:"B"},
+{name:"Suyou",lane:"Jungle",role:"Assassin/Fighter",tier:"B"},
+{name:"Yi Sun-shin",lane:"Jungle",role:"Assassin/Marksman",tier:"A"},
+{name:"Yin",lane:"Jungle",role:"Fighter/Assassin",tier:"B"},
+
+/* MID */
+{name:"Aurora",lane:"Mid",role:"Mage",tier:"C"},
+{name:"Cecilion",lane:"Mid",role:"Mage",tier:"B"},
+{name:"Chang'e",lane:"Mid",role:"Mage",tier:"C"},
+{name:"Cyclops",lane:"Mid",role:"Mage",tier:"B"},
+{name:"Eudora",lane:"Mid",role:"Mage",tier:"A"},
+{name:"Faramis",lane:"Mid",role:"Support/Mage",tier:"B"},
+{name:"Gord",lane:"Mid",role:"Mage",tier:"A"},
+{name:"Harith",lane:"Mid",role:"Mage",tier:"D"},
+{name:"Kagura",lane:"Mid",role:"Mage",tier:"B"},
+{name:"Kadita",lane:"Mid",role:"Mage/Assassin",tier:"A"},
+{name:"Lunox",lane:"Mid",role:"Mage",tier:"C"},
+{name:"Luo Yi",lane:"Mid",role:"Mage",tier:"D"},
+{name:"Lylia",lane:"Mid",role:"Mage",tier:"C"},
+{name:"Nana",lane:"Mid",role:"Mage",tier:"C"},
+{name:"Novaria",lane:"Mid",role:"Mage",tier:"B"},
+{name:"Odette",lane:"Mid",role:"Mage",tier:"B"},
+{name:"Pharsa",lane:"Mid",role:"Mage",tier:"C"},
+{name:"Selena",lane:"Mid",role:"Assassin/Mage",tier:"C"},
+{name:"Valentina",lane:"Mid",role:"Mage",tier:"D"},
+{name:"Valir",lane:"Mid",role:"Mage",tier:"A"},
+{name:"Vale",lane:"Mid",role:"Mage",tier:"B"},
+{name:"Vexana",lane:"Mid",role:"Mage",tier:"B"},
+{name:"Xavier",lane:"Mid",role:"Mage",tier:"C"},
+{name:"Yve",lane:"Mid",role:"Mage",tier:"B"},
+{name:"Zetian",lane:"Mid",role:"Mage",tier:"A"},
+{name:"Zhask",lane:"Mid",role:"Mage",tier:"B"},
+{name:"Zhuxin",lane:"Mid",role:"Mage",tier:"C"},
+
+/* GOLD */
+{name:"Beatrix",lane:"Gold",role:"Marksman",tier:"B"},
+{name:"Brody",lane:"Gold",role:"Marksman",tier:"C"},
+{name:"Bruno",lane:"Gold",role:"Marksman",tier:"D"},
+{name:"Claude",lane:"Gold",role:"Marksman",tier:"C"},
+{name:"Clint",lane:"Gold",role:"Marksman",tier:"C"},
+{name:"Granger",lane:"Gold",role:"Marksman",tier:"D"},
+{name:"Hanabi",lane:"Gold",role:"Marksman",tier:"A"},
+{name:"Irithel",lane:"Gold",role:"Marksman",tier:"B"},
+{name:"Ixia",lane:"Gold",role:"Marksman",tier:"C"},
+{name:"Karrie",lane:"Gold",role:"Marksman",tier:"D"},
+{name:"Kimmy",lane:"Gold",role:"Marksman/Mage",tier:"C"},
+{name:"Layla",lane:"Gold",role:"Marksman",tier:"C"},
+{name:"Lesley",lane:"Gold",role:"Marksman/Assassin",tier:"C"},
+{name:"Melissa",lane:"Gold",role:"Marksman",tier:"S"},
+{name:"Miya",lane:"Gold",role:"Marksman",tier:"S"},
+{name:"Moskov",lane:"Gold",role:"Marksman",tier:"C"},
+{name:"Natan",lane:"Gold",role:"Marksman",tier:"C"},
+{name:"Obsidia",lane:"Gold",role:"Marksman",tier:"B"},
+{name:"Popol and Kupa",lane:"Gold",role:"Marksman",tier:"B"},
+{name:"Wanwan",lane:"Gold",role:"Marksman",tier:"D"},
+
+/* ROAM */
+{name:"Akai",lane:"Roam",role:"Tank",tier:"B"},
+{name:"Angela",lane:"Roam",role:"Support",tier:"B"},
+{name:"Atlas",lane:"Roam",role:"Tank",tier:"A"},
+{name:"Belerick",lane:"Roam",role:"Tank",tier:"S"},
+{name:"Carmilla",lane:"Roam",role:"Support/Tank",tier:"A"},
+{name:"Chip",lane:"Roam",role:"Support/Tank",tier:"C"},
+{name:"Diggie",lane:"Roam",role:"Support",tier:"A"},
+{name:"Estes",lane:"Roam",role:"Support",tier:"S"},
+{name:"Floryn",lane:"Roam",role:"Support",tier:"S"},
+{name:"Franco",lane:"Roam",role:"Tank",tier:"D"},
+{name:"Gatotkaca",lane:"Roam",role:"Tank/Fighter",tier:"D"},
+{name:"Gloo",lane:"Roam",role:"Tank",tier:"S"},
+{name:"Grock",lane:"Roam",role:"Tank/Fighter",tier:"D"},
+{name:"Johnson",lane:"Roam",role:"Tank/Support",tier:"B"},
+{name:"Kaja",lane:"Roam",role:"Support",tier:"C"},
+{name:"Kalea",lane:"Roam",role:"Support/Fighter",tier:"D"},
+{name:"Khufra",lane:"Roam",role:"Tank",tier:"S"},
+{name:"Lolita",lane:"Roam",role:"Support/Tank",tier:"A"},
+{name:"Marcel",lane:"Roam",role:"Support",tier:"S"},
+{name:"Mathilda",lane:"Roam",role:"Support/Assassin",tier:"D"},
+{name:"Minotaur",lane:"Roam",role:"Tank/Support",tier:"S"},
+{name:"Rafaela",lane:"Roam",role:"Support",tier:"S"},
+{name:"Tigreal",lane:"Roam",role:"Tank",tier:"C"}
+];
+
+
+/* =========================================================
+   DEFAULT RECOMMENDATIONS
+========================================================= */
+
+const templates = {
+
+EXP: {
+    build:[
+        "Tough Boots / Warrior Boots",
+        "War Axe",
+        "Queen's Wings",
+        "Oracle",
+        "Antique Cuirass",
+        "Immortality"
+    ],
+    emblem:"Fighter Emblem • Firmness • Festival of Blood • Brave Smite",
+    spell:"Flicker / Vengeance",
+    playstyle:"Farm safely, contest Turtle-side pressure, watch the map and join fights when your team can actually convert your pressure."
+},
+
+Jungle:{
+    build:[
+        "Tough Boots",
+        "Jungle Damage Item",
+        "Hunter Strike",
+        "War Axe",
+        "Malefic Roar",
+        "Immortality"
+    ],
+    emblem:"Assassin/Fighter Emblem • Adaptive Attack • Penetration • Killing Spree",
+    spell:"Retribution",
+    playstyle:"Prioritize farm efficiency, Turtle/Lord timing and enemy backline access. Do not throw your life away for random kills."
+},
+
+Mid:{
+    build:[
+        "Arcane Boots",
+        "Glowing Wand",
+        "Holy Crystal",
+        "Divine Glaive",
+        "Blood Wings",
+        "Winter Crown"
+    ],
+    emblem:"Mage Emblem • Rupture • Wilderness Blessing • Lethal Ignition",
+    spell:"Flicker / Purify",
+    playstyle:"Clear waves quickly, rotate with your roamer and punish enemies who reveal themselves on the map."
+},
+
+Gold:{
+    build:[
+        "Swift Boots",
+        "Demon Hunter Sword",
+        "Golden Staff",
+        "Wind of Nature",
+        "Malefic Roar",
+        "Immortality"
+    ],
+    emblem:"Marksman Emblem • Fatal • Weapons Master • Quantum Charge",
+    spell:"Flicker / Purify",
+    playstyle:"Prioritize gold and safe positioning. Your life is more valuable than forcing a bad early fight."
+},
+
+Roam:{
+    build:[
+        "Tough Boots",
+        "Dominance Ice",
+        "Antique Cuirass",
+        "Radiant Armor",
+        "Athena's Shield",
+        "Immortality"
+    ],
+    emblem:"Tank/Support Emblem • Firmness • Wilderness Blessing • Concussive Blast",
+    spell:"Flicker / Vengeance",
+    playstyle:"Control vision, protect your damage dealers and create fights your team can actually follow."
+}
 
 };
 
 
-// Fill hero dropdown
+/* =========================================================
+   HERO-SPECIFIC OVERRIDES
+========================================================= */
 
-const select = document.getElementById("heroSelect");
+const special = {
 
-Object.keys(heroes).sort().forEach(hero => {
+Thamuz:{
+    build:[
+        "Tough Boots",
+        "Corrosion Scythe",
+        "War Axe",
+        "Oracle",
+        "Queen's Wings",
+        "Immortality"
+    ],
+    emblem:"Fighter Emblem • Firmness • Festival of Blood • Brave Smite",
+    spell:"Vengeance",
+    playstyle:"Pressure the lane, abuse sustained damage and keep your ultimate for extended fights."
+},
 
-    const option = document.createElement("option");
+Paquito:{
+    build:[
+        "Tough Boots",
+        "War Axe",
+        "Hunter Strike",
+        "Blade of Despair",
+        "Malefic Roar",
+        "Immortality"
+    ],
+    emblem:"Fighter Emblem • Rupture • Festival of Blood • Killing Spree",
+    spell:"Flicker",
+    playstyle:"Use enhanced skills deliberately. Burst the backline and disengage before the enemy collapses."
+},
 
-    option.value = hero;
-    option.textContent = hero;
+Fanny:{
+    build:[
+        "Tough Boots",
+        "Hunter Strike",
+        "Blade of Despair",
+        "Malefic Roar",
+        "Rose Gold Meteor",
+        "Immortality"
+    ],
+    emblem:"Assassin Emblem • Rupture • Seasoned Hunter • Killing Spree",
+    spell:"Retribution",
+    playstyle:"Farm efficiently, track enemy CC and cables, then look for isolated targets."
+},
 
-    select.appendChild(option);
+Ling:{
+    build:[
+        "Tough Boots",
+        "Berserker's Fury",
+        "Haas' Claws",
+        "Blade of Despair",
+        "Malefic Roar",
+        "Immortality"
+    ],
+    emblem:"Assassin Emblem • Rupture • Seasoned Hunter • Killing Spree",
+    spell:"Retribution",
+    playstyle:"Use walls for mobility and wait for enemy CC to be committed before diving."
+},
 
-});
+Gusion:{
+    build:[
+        "Arcane Boots",
+        "Genius Wand",
+        "Holy Crystal",
+        "Divine Glaive",
+        "Blood Wings",
+        "Winter Crown"
+    ],
+    emblem:"Assassin Emblem • Rupture • Seasoned Hunter • Killing Spree",
+    spell:"Retribution / Execute",
+    playstyle:"Burst squishy targets, reset your positioning and avoid wasting your combo on tanks."
+},
+
+Hirara:{
+    build:[
+        "Arcane Boots",
+        "Genius Wand",
+        "Glowing Wand",
+        "Holy Crystal",
+        "Divine Glaive",
+        "Winter Crown"
+    ],
+    emblem:"Assassin Emblem • Rupture • Seasoned Hunter • Killing Spree",
+    spell:"Retribution",
+    playstyle:"Play as a high-damage pickoff assassin. Enter after key enemy CC is used and prioritize the backline."
+},
+
+Belerick:{
+    build:[
+        "Tough Boots",
+        "Dominance Ice",
+        "Cursed Helmet",
+        "Radiant Armor",
+        "Athena's Shield",
+        "Immortality"
+    ],
+    emblem:"Tank Emblem • Firmness • Wilderness Blessing • Concussive Blast",
+    spell:"Vengeance",
+    playstyle:"Absorb pressure, protect carries and punish enemies who rely heavily on basic attacks."
+},
+
+Edith:{
+    build:[
+        "Tough Boots",
+        "Dominance Ice",
+        "Athena's Shield",
+        "Radiant Armor",
+        "Holy Crystal",
+        "Divine Glaive"
+    ],
+    emblem:"Tank Emblem • Firmness • Bargain Hunter • Concussive Blast",
+    spell:"Flicker",
+    playstyle:"Build defenses in human form, stack passive energy and transform when you can safely deal damage."
+}
+
+};
 
 
-// Show selected hero
+/* =========================================================
+   APP LOGIC
+========================================================= */
 
-function showHero() {
+let currentLane = "";
 
-    const heroName = select.value;
+function selectLane(lane,button){
 
-    if (!heroName) {
+    currentLane = lane;
 
-        document.getElementById("result").innerHTML = `
-            <div class="panel empty">
-                Choose a hero above to activate KronAI.
-            </div>
-        `;
+    document.querySelectorAll(".lane-btn")
+        .forEach(btn => btn.classList.remove("active"));
+
+    button.classList.add("active");
+
+    document.getElementById("heroSection").style.display = "block";
+
+    document.getElementById("laneTitle").innerText =
+        lane + " Lane Heroes";
+
+    document.getElementById("search").value = "";
+
+    document.getElementById("result").classList.remove("show");
+
+    renderHeroes();
+
+    window.scrollTo({
+        top: document.getElementById("heroSection").offsetTop - 15,
+        behavior:"smooth"
+    });
+}
+
+
+function renderHeroes(){
+
+    const grid = document.getElementById("heroGrid");
+
+    const search =
+        document.getElementById("search")
+        .value
+        .toLowerCase();
+
+    const filtered = heroes.filter(hero =>
+        hero.lane === currentLane &&
+        hero.name.toLowerCase().includes(search)
+    );
+
+    grid.innerHTML = "";
+
+    if(filtered.length === 0){
+
+        grid.innerHTML =
+            "<p style='color:#8994b0'>No heroes found.</p>";
 
         return;
     }
 
-    const hero = heroes[heroName];
+    filtered.forEach(hero => {
 
-    let buildHTML = "";
+        const card = document.createElement("div");
 
-    hero.build.forEach(item => {
-        buildHTML += `<span class="item">${item}</span>`;
+        card.className = "hero";
+
+        card.onclick = () =>
+            showHero(hero);
+
+        card.innerHTML = `
+            <div class="hero-name">${hero.name}</div>
+            <div class="hero-role">${hero.role}</div>
+            <div class="hero-tier">Tier ${hero.tier}</div>
+        `;
+
+        grid.appendChild(card);
     });
+}
 
 
-    document.getElementById("result").innerHTML = `
+function showHero(hero){
 
-        <div class="panel">
+    const recommendation =
+        special[hero.name] ||
+        templates[hero.lane];
 
-            <div class="hero-title">
-                ${heroName}
-            </div>
+    document.getElementById("resultTitle").innerText =
+        "⚡ " + hero.name;
 
-            <div class="role">
-                ${hero.roles}
-            </div>
+    document.getElementById("build").innerHTML =
+        recommendation.build
+        .map(item => `<div class="item">• ${item}</div>`)
+        .join("");
 
-            <div class="grid">
+    document.getElementById("emblem").innerHTML =
+        recommendation.emblem;
 
-                <div class="card">
-                    <h3>⚔️ Recommended Build</h3>
-                    <p>${buildHTML}</p>
-                </div>
+    document.getElementById("spell").innerHTML =
+        recommendation.spell;
 
+    document.getElementById("playstyle").innerText =
+        recommendation.playstyle;
 
-                <div class="card">
-                    <h3>
+    document.getElementById("result")
+        .classList.add("show");
+
+    document.getElementById("result")
+        .scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+        });
+}
+
+</script>
+
+</body>
+</html>
